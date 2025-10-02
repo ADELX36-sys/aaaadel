@@ -1,427 +1,264 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>لوحة البرامج — AdelX36</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADELX36 Dashboard</title>
 <style>
-  :root{
-    --bg:#f4f7fb; --card:#fff; --muted:#6b7280; --accent:#2563eb; --danger:#ef4444; --success:#10b981;
-    --glass: rgba(255,255,255,0.6);
-    --radius:12px;
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #dfe9f3, #ffffff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  body.dark{ --bg:#071028; --card:#0f1724; --muted:#9aa4b2; --accent:#3b82f6; --danger:#f97316; --glass: rgba(255,255,255,0.04); }
-  *{box-sizing:border-box}
-  body{
-    margin:0;font-family:Inter, "Segoe UI", Roboto, "Noto Sans Arabic", Arial; background:linear-gradient(180deg,var(--bg), #e6eefc);
-    color: #0f1724; min-height:100vh;
+  /* شاشة تسجيل الدخول */
+  #login-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 350px;
   }
-  body.dark { color:#e6eefc; }
-
-  header{
-    display:flex;align-items:center;justify-content:space-between;padding:12px 18px;
-    background:linear-gradient(90deg,var(--card), #dfeeff);backdrop-filter: blur(6px);
-    box-shadow: 0 6px 18px rgba(15,23,36,0.06);
-    position:sticky; top:0; z-index:50;
+  #login-container h2 { margin-bottom: 20px; color: #4a90e2; }
+  input, button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
   }
-  .brand{display:flex;gap:12px;align-items:center;}
-  .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent), #06b6d4);display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
-  header h1{font-size:1.05rem;margin:0}
-  .controls{display:flex;gap:10px;align-items:center;}
+  button {
+    background: #4a90e2;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background: #357abd; }
 
-  main{padding:18px;max-width:1200px;margin:18px auto;display:grid;grid-template-columns:320px 1fr;gap:18px;}
-  @media(max-width:1000px){ main{grid-template-columns:1fr; padding:12px} header .hide-mobile{display:none} }
+  /* لوحة التحكم */
+  #dashboard {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+  }
+  #sidebar {
+    width: 220px;
+    background: #4a90e2;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+  }
+  #sidebar h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.3em;
+  }
+  #sidebar button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-size: 1em;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  #sidebar button:hover { background: #357abd; }
 
-  .panel{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 10px 30px rgba(2,6,23,0.06); }
-  .panel h3{margin:0 0 12px 0;font-size:1rem}
-  .panel small{color:var(--muted)}
-  .input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);margin-top:8px}
-  .btn{display:inline-block;padding:10px 12px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
-  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--muted)}
-  .btn.danger{background:var(--danger)}
-  .small{text-align:center;font-size:0.9rem;color:var(--muted);margin-top:8px}
+  #main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  #main h2 { color: #333; }
+  .program-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .program-card {
+    width: 200px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    padding: 10px;
+    text-align: center;
+  }
+  .program-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .program-card button {
+    margin-top: 10px;
+    background: #e94b3c;
+  }
+  .program-card button:hover { background: #c0392b; }
 
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
-  .search{flex:1;display:flex;gap:8px;align-items:center}
-  .search input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
-  .actions{display:flex;gap:8px;align-items:center}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-  .card{background:var(--card);border-radius:10px;padding:10px;box-shadow:0 8px 20px rgba(2,6,23,0.04);display:flex;flex-direction:column;gap:8px;overflow:hidden}
-  .card img{width:100%;height:120px;object-fit:cover;border-radius:8px}
-  .card h4{margin:0;font-size:1rem}
-  .card .meta{display:flex;justify-content:space-between;align-items:center}
-  .card .meta small{color:var(--muted)}
-
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid rgba(0,0,0,0.04);text-align:left}
-  th{font-size:0.9rem;color:var(--muted)}
-  td.actions{display:flex;gap:6px}
-
-  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;z-index:99;}
-  .modal{width:100%;max-width:820px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.4)}
-  .row{display:flex;gap:10px}
-  .col{flex:1}
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 16px;border-radius:8px;display:none;z-index:9999}
-  .clock{font-weight:600;padding:6px 8px;border-radius:8px;background:var(--glass);font-size:0.95rem}
-  .muted{color:var(--muted)}
-  .center{display:flex;align-items:center;justify-content:center}
-  .linklike{background:transparent;border:none;color:var(--accent);cursor:pointer}
-  .small-btn{padding:6px 8px;border-radius:6px;border:none;cursor:pointer}
-
-  footer{max-width:1200px;margin:12px auto 40px;text-align:center;color:var(--muted);font-size:13px}
+  #topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  #search {
+    width: 300px;
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <div class="logo">AX</div>
-    <div>
-      <h1>لوحة البرامج — AdelX36</h1>
-      <small class="muted hide-mobile">نظام إدارة محلي للبرامج والمستخدمين</small>
-    </div>
+<!-- شاشة تسجيل الدخول -->
+<div id="login-container">
+  <h2>Welcome</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- لوحة التحكم -->
+<div id="dashboard">
+  <div id="sidebar">
+    <h3>Menu</h3>
+    <button onclick="showCategory('programs')">برامج</button>
+    <button onclick="showCategory('games')">ألعاب</button>
+    <button onclick="showCategory('tools')">أدوات</button>
+    <button onclick="logout()">Logout</button>
   </div>
-  <div class="controls">
-    <div id="user-area" class="center"></div>
-    <div class="clock" id="header-clock">--:--:--</div>
-    <button class="btn hide-mobile" id="theme-toggle">Dark</button>
+  <div id="main">
+    <div id="topbar">
+      <h2 id="greeting">Welcome Back</h2>
+      <input type="text" id="search" placeholder="Search..." onkeyup="searchItems(this.value)">
+    </div>
+    <div id="content"></div>
+    <hr>
+    <h3>إضافة عنصر جديد</h3>
+    <input type="text" id="item-title" placeholder="العنوان">
+    <input type="file" id="item-img" accept="image/*">
+    <input type="text" id="item-link" placeholder="الرابط">
+    <select id="item-category">
+      <option value="programs">برامج</option>
+      <option value="games">ألعاب</option>
+      <option value="tools">أدوات</option>
+    </select>
+    <button onclick="addItem()">إضافة</button>
   </div>
-</header>
-
-<main>
-  <!-- left: auth / shortcuts -->
-  <aside class="panel" id="auth-panel">
-    <h3>تسجيل الدخول</h3>
-
-    <div id="login-form">
-      <input id="in-username" class="input" placeholder="اسم المستخدم (مثال: adelx36)">
-      <input id="in-password" class="input" type="password" placeholder="كلمة المرور">
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn" id="btn-login">دخول</button>
-        <button class="btn ghost" id="btn-guest">دخول كضيف</button>
-      </div>
-      <p class="small">الأدمن الافتراضي: <b>adelx36</b> / الباس: <b>0114542653</b> — أنصح تغييره فورًا</p>
-    </div>
-
-    <div id="logged-panel" style="display:none">
-      <h3 id="who-title">مرحبًا</h3>
-      <p class="small" id="who-role">صلاحيات: —</p>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-        <button class="btn" id="btn-logout">تسجيل خروج</button>
-        <button class="btn ghost" id="btn-export">تصدير JSON</button>
-        <label class="btn ghost" style="cursor:pointer">استيراد JSON<input type="file" id="import-file" accept=".json" style="display:none" /></label>
-      </div>
-      <hr style="margin:12px 0">
-      <div id="admin-shortcuts" style="display:none">
-        <h4 style="margin:6px 0">لوحة الأدمن</h4>
-        <button class="btn ghost" id="open-add-program">أضف برنامج</button>
-        <button class="btn ghost" id="open-manage-users">إدارة المستخدمين</button>
-        <button class="btn ghost" id="open-manage-programs">إدارة البرامج</button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- right: content -->
-  <section>
-    <div class="topbar">
-      <div class="search">
-        <input id="search-input" placeholder="ابحث عن برنامج بالعنوان..." />
-      </div>
-      <div class="actions">
-        <select id="view-mode" class="input" style="width:140px;padding:8px">
-          <option value="cards">عرض كروت</option>
-          <option value="table">عرض جدول</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="content-cards" class="grid"></div>
-
-    <div id="content-table" style="display:none">
-      <h3>قائمة البرامج</h3>
-      <table id="programs-table">
-        <thead><tr><th>الصورة</th><th>العنوان</th><th>الرابط</th><th>حجم الملف</th><th>الإجراءات</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div id="users-panel" style="display:none;margin-top:14px" class="panel">
-      <h3>إدارة المستخدمين</h3>
-      <div style="display:flex;gap:10px;margin-bottom:10px">
-        <input id="new-username" class="input" placeholder="اسم المستخدم الجديد" />
-        <input id="new-password" type="password" class="input" placeholder="كلمة المرور" />
-        <button class="btn" id="create-user">إنشاء</button>
-      </div>
-      <table id="users-table">
-        <thead><tr><th>المستخدم</th><th>دور</th><th>تعديل/حذف</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-</main>
-
-<!-- modal and toast -->
-<div id="modal" class="modal-backdrop"><div class="modal" id="modal-body"></div></div>
-<div id="toast" class="toast"></div>
-<footer>© 2025 — مصمَّم لـ AdelX36 — احفظ نسخة احتياطية بانتظام</footer>
+</div>
 
 <script>
-/* ============================
-   Config & Storage keys
-   ============================ */
-const DB_KEYS = { USERS:'ax_users_v1', PROGRAMS:'ax_programs_v1', THEME:'ax_theme_v1', SESSION:'ax_session_v1' };
-function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-function load(key){ try{ return JSON.parse(localStorage.getItem(key))||null }catch(e){return null;} }
-function showToast(msg, ok=true){ const t=document.getElementById('toast'); t.textContent=msg; t.style.background=ok? '#111' : '#b91c1c'; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
-function openModal(html){ const md=document.getElementById('modal'); document.getElementById('modal-body').innerHTML=html; md.style.display='flex'; }
-function closeModal(){ document.getElementById('modal').style.display='none'; }
-document.getElementById('modal').addEventListener('click',(e)=>{ if(e.target.id==='modal') closeModal(); });
+  const adminUser = "adelx36";
+  const adminPass = "0114542653";
 
-/* helper hash for passwords */
-async function hashPwd(pw){ const enc=new TextEncoder().encode(pw); const buf=await crypto.subtle.digest('SHA-256',enc); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+  let data = JSON.parse(localStorage.getItem("dashboardData")) || {
+    programs: [],
+    games: [],
+    tools: []
+  };
 
-/* ============================
-   Initialize default data
-   ============================ */
-let users = load(DB_KEYS.USERS) || null;
-let programs = load(DB_KEYS.PROGRAMS) || null;
+  let currentCategory = "programs";
 
-(async function initDefaults(){
-  if(!users){
-    const adminHash = await hashPwd('0114542653');
-    users = [
-      {username:'adelx36', role:'admin', pass: adminHash},
-      {username:'guest', role:'guest', pass: await hashPwd('guest')}
-    ];
-    save(DB_KEYS.USERS, users);
+  function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    if(username === adminUser && password === adminPass){
+      document.getElementById("login-container").style.display="none";
+      document.getElementById("dashboard").style.display="flex";
+      showCategory("programs");
+    } else {
+      alert("Wrong credentials!");
+    }
   }
-  if(!programs){
-    programs = [
-      {id:genId(), title:'مثال: My Cool Program', img:'https://via.placeholder.com/400x240?text=App', link:'https://example.com', filesize:'-', created:Date.now(), meta:{}}
-    ];
-    save(DB_KEYS.PROGRAMS, programs);
+
+  function logout() {
+    document.getElementById("dashboard").style.display="none";
+    document.getElementById("login-container").style.display="block";
   }
-  const theme = load(DB_KEYS.THEME) || 'light'; if(theme==='dark') document.body.classList.add('dark');
-  const session = load(DB_KEYS.SESSION); if(session && session.username) { setSession(session.username); }
-  renderUI();
-})();
 
-function genId(){ return 'id_'+Math.random().toString(36).slice(2,10); }
-
-/* ============================
-   Auth: login/logout/session
-   ============================ */
-async function attemptLogin(username,password){
-  username=(username||'').trim(); const ulist = load(DB_KEYS.USERS) || [];
-  const hashed = await hashPwd(password||''); const found = ulist.find(u=>u.username===username && u.pass===hashed);
-  if(found){ setSession(found.username); showToast('تم تسجيل الدخول'); return true; } return false;
-}
-function setSession(username){ save(DB_KEYS.SESSION, {username, ts:Date.now()}); renderUI(); }
-function clearSession(){ localStorage.removeItem(DB_KEYS.SESSION); renderUI(); }
-function currentUser(){ const s=load(DB_KEYS.SESSION); if(!s) return null; const ulist=load(DB_KEYS.USERS)||[]; return ulist.find(x=>x.username===s.username)||null; }
-
-/* ============================
-   Render UI
-   ============================ */
-function renderUI(){
-  users = load(DB_KEYS.USERS); programs = load(DB_KEYS.PROGRAMS);
-  const cur = currentUser();
-  const loginForm = document.getElementById('login-form');
-  const loggedPanel = document.getElementById('logged-panel');
-  const whoTitle = document.getElementById('who-title');
-  const whoRole = document.getElementById('who-role');
-  const adminShort = document.getElementById('admin-shortcuts');
-  const userArea = document.getElementById('user-area');
-
-  if(cur){
-    loginForm.style.display='none'; loggedPanel.style.display='block';
-    whoTitle.textContent = `أهلاً ${cur.username}`; whoRole.textContent = `صلاحيات: ${cur.role}`;
-    userArea.innerHTML = `<strong style="margin-left:8px">${cur.username}</strong>`;
-    if(cur.role==='admin'){ adminShort.style.display='block'; document.getElementById('users-panel').style.display='none'; }
-    else adminShort.style.display='none';
-  } else {
-    loginForm.style.display='block'; loggedPanel.style.display='none'; userArea.innerHTML='';
+  function showCategory(cat){
+    currentCategory = cat;
+    renderItems();
   }
-  renderProgramsList(); renderProgramsTable(); renderUsersTable();
-}
 
-/* ============================
-   Programs CRUD + render
-   ============================ */
-function renderProgramsList(filter=''){
-  programs = load(DB_KEYS.PROGRAMS) || []; const container=document.getElementById('content-cards'); container.innerHTML='';
-  const q=(filter||'').toLowerCase(); const showMode=document.getElementById('view-mode').value;
-  document.getElementById('content-cards').style.display = showMode==='cards' ? 'grid' : 'none';
-  document.getElementById('content-table').style.display = showMode==='table' ? 'block' : 'none';
-  const cur=currentUser(); const canEdit = cur && cur.role==='admin';
-  (programs.filter(p=>p.title.toLowerCase().includes(q)).sort((a,b)=>b.created - a.created)).forEach(p=>{
-    const card=document.createElement('div'); card.className='card';
-    card.innerHTML = `
-      <img src="${p.img}" alt="${escapeHtml(p.title)}">
-      <h4>${escapeHtml(p.title)}</h4>
-      <div class="meta"><small class="muted">${p.filesize||'-'}</small><small class="muted">${new Date(p.created).toLocaleString()}</small></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn" onclick="openLink('${encodeURI(p.link)}')">فتح</button>
-        ${canEdit? `<button class="btn ghost" onclick="openEditProgram('${p.id}')">تعديل</button>
-                   <button class="btn danger" onclick="confirmDeleteProgram('${p.id}')">حذف</button>` : ''}
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
+  function renderItems() {
+    const container=document.getElementById("content");
+    container.innerHTML='';
+    const items=data[currentCategory];
+    const list=document.createElement("div");
+    list.className="program-list";
+    items.forEach((item,i)=>{
+      const card=document.createElement("div");
+      card.className="program-card";
+      card.innerHTML=`
+        <img src="${item.img}" alt="${item.title}">
+        <p>${item.title}</p>
+        <button onclick="removeItem(${i})">حذف</button>
+        <button onclick="window.open('${item.link}','_blank')">فتح</button>
+      `;
+      list.appendChild(card);
+    });
+    container.appendChild(list);
+  }
 
-function renderProgramsTable(){
-  const tbody=document.querySelector('#programs-table tbody'); tbody.innerHTML=''; const cur=currentUser(); const canEdit = cur && cur.role==='admin';
-  (programs||[]).forEach(p=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML = `<td style="width:120px"><img src="${p.img}" style="width:100px;height:60px;object-fit:cover;border-radius:6px"></td>
-      <td>${escapeHtml(p.title)}</td>
-      <td><a href="${p.link}" target="_blank" rel="noreferrer">${shorten(p.link,45)}</a></td>
-      <td>${p.filesize||'-'}</td>
-      <td class="actions">${canEdit? `<button class="linklike" onclick="openEditProgram('${p.id}')">تعديل</button><button class="linklike" onclick="confirmDeleteProgram('${p.id}')">حذف</button>` : '-'}</td>`;
-    tbody.appendChild(tr);
-  });
-}
+  function addItem() {
+    const title=document.getElementById("item-title").value;
+    const file=document.getElementById("item-img").files[0];
+    const link=document.getElementById("item-link").value;
+    const cat=document.getElementById("item-category").value;
+    if(title && file && link){
+      const reader=new FileReader();
+      reader.onload=function(e){
+        data[cat].push({title,img:e.target.result,link});
+        saveData();
+        renderItems();
+      }
+      reader.readAsDataURL(file);
+      document.getElementById("item-title").value='';
+      document.getElementById("item-img").value='';
+      document.getElementById("item-link").value='';
+    } else {
+      alert("املأ كل الحقول!");
+    }
+  }
 
-function openLink(url){ window.open(decodeURI(url), '_blank'); }
+  function removeItem(index) {
+    data[currentCategory].splice(index,1);
+    saveData();
+    renderItems();
+  }
 
-document.getElementById('open-add-program').addEventListener('click', ()=> openModal(addProgramHtml()) );
+  function saveData() {
+    localStorage.setItem("dashboardData",JSON.stringify(data));
+  }
 
-function addProgramHtml(){
-  return `
-    <h3>إضافة برنامج / لعبة</h3>
-    <div class="row" style="margin-top:10px">
-      <div class="col"><input id="m-title" class="input" placeholder="عنوان البرنامج" /></div>
-      <div class="col"><input id="m-link" class="input" placeholder="رابط تحميل أو صفحة" /></div>
-    </div>
-    <div style="margin-top:10px"><label class="muted">صورة العرض (اختياري)</label><input type="file" id="m-img" accept="image/*" /></div>
-    <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-      <button class="btn ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn" onclick="submitAddProgram()">إضافة</button>
-    </div>
-  `;
-}
-
-async function submitAddProgram(){
-  const title=document.getElementById('m-title').value.trim(); const link=document.getElementById('m-link').value.trim();
-  const fileInput=document.getElementById('m-img');
-  if(!title || !link){ showToast('العنوان و الرابط مطلوبان',false); return; }
-  let imgData='https://via.placeholder.com/400x240?text=App'; let filesize='-';
-  if(fileInput && fileInput.files && fileInput.files[0]){ const f=fileInput.files[0]; filesize=humanFileSize(f.size); imgData=await readFileAsDataURL(f); }
-  const item={id:genId(), title, link, img:imgData, filesize, created:Date.now(), meta:{}};
-  programs.unshift(item); save(DB_KEYS.PROGRAMS, programs); closeModal(); renderUI(); showToast('تمت الإضافة');
-}
-
-function openEditProgram(id){ const p=(programs||[]).find(x=>x.id===id); if(!p){ showToast('غير موجود', false); return; } openModal(editProgramHtml(p)); }
-function editProgramHtml(p){
-  return `
-    <h3>تعديل برنامج</h3>
-    <div class="row" style="margin-top:10px">
-      <div class="col"><input id="e-title" class="input" value="${escapeHtml(p.title)}" /></div>
-      <div class="col"><input id="e-link" class="input" value="${escapeHtml(p.link)}" /></div>
-    </div>
-    <div style="margin-top:10px"><label class="muted">تغيير الصورة (اختياري)</label><input type="file" id="e-img" accept="image/*" /></div>
-    <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-      <button class="btn ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn" onclick="submitEditProgram('${p.id}')">حفظ</button>
-    </div>
-  `;
-}
-
-async function submitEditProgram(id){
-  const title=document.getElementById('e-title').value.trim(); const link=document.getElementById('e-link').value.trim();
-  const fileInput=document.getElementById('e-img');
-  if(!title || !link){ showToast('العنوان و الرابط مطلوبان',false); return; }
-  const idx=programs.findIndex(x=>x.id===id); if(idx===-1){ showToast('غير موجود',false); return; }
-  if(fileInput && fileInput.files && fileInput.files[0]){ const f=fileInput.files[0]; const data=await readFileAsDataURL(f); programs[idx].img=data; programs[idx].filesize=humanFileSize(f.size); }
-  programs[idx].title=title; programs[idx].link=link; save(DB_KEYS.PROGRAMS,programs); closeModal(); renderUI(); showToast('تم الحفظ');
-}
-
-function confirmDeleteProgram(id){ openModal(`<h3>تأكيد حذف</h3><p class="muted">هل تريد حذف هذا البرنامج نهائيًا؟</p><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn danger" onclick="deleteProgram('${id}')">حذف</button></div>`); }
-function deleteProgram(id){ programs=programs.filter(p=>p.id!==id); save(DB_KEYS.PROGRAMS,programs); closeModal(); renderUI(); showToast('تم الحذف'); }
-
-/* ============================
-   Users management
-   ============================ */
-document.getElementById('open-manage-users').addEventListener('click', ()=> { document.getElementById('users-panel').style.display='block'; renderUsersTable(); });
-
-async function renderUsersTable(){
-  const ulist=load(DB_KEYS.USERS)||[]; const tbody=document.querySelector('#users-table tbody'); tbody.innerHTML='';
-  ulist.forEach(u=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML = `<td>${escapeHtml(u.username)}</td><td>${u.role}</td><td><button class="linklike" onclick="openEditUser('${u.username}')">تعديل</button> ${u.username!=='adelx36'? `<button class="linklike" onclick="confirmDeleteUser('${u.username}')">حذف</button>` : ''}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-document.getElementById('create-user').addEventListener('click', async ()=>{
-  const username=document.getElementById('new-username').value.trim(); const password=document.getElementById('new-password').value.trim();
-  if(!username||!password){ showToast('الاسم و الباسورد مطلوبين', false); return; }
-  let ulist=load(DB_KEYS.USERS)||[]; if(ulist.find(x=>x.username===username)){ showToast('المستخدم موجود بالفعل', false); return; }
-  const hashed=await hashPwd(password); ulist.push({username, role:'guest', pass:hashed}); save(DB_KEYS.USERS,ulist); document.getElementById('new-username').value=''; document.getElementById('new-password').value=''; showToast('تم إنشاء المستخدم'); renderUsersTable();
-});
-
-function openEditUser(username){
-  const u=(load(DB_KEYS.USERS)||[]).find(x=>x.username===username); if(!u) return showToast('خطأ', false);
-  openModal(`<h3>تعديل مستخدم: ${escapeHtml(u.username)}</h3><div style="margin-top:8px"><label class="muted">الدور</label><select id="u-role" class="input"><option value="guest">Guest</option><option value="admin">Admin</option></select><label class="muted" style="margin-top:6px">تغيير كلمة المرور (اتركه فارغ لو لا تغيير)</label><input id="u-pass" type="password" class="input" placeholder="كلمة مرور جديدة" /></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="submitEditUser('${escapeHtml(u.username)}')">حفظ</button></div>`);
-  document.getElementById('u-role').value=u.role;
-}
-
-async function submitEditUser(username){
-  const role=document.getElementById('u-role').value; const pass=document.getElementById('u-pass').value;
-  let ulist=load(DB_KEYS.USERS)||[]; const idx=ulist.findIndex(x=>x.username===username);
-  if(idx===-1){ showToast('غير موجود', false); return; }
-  ulist[idx].role=role; if(pass&&pass.trim()!==''){ ulist[idx].pass=await hashPwd(pass); }
-  save(DB_KEYS.USERS,ulist); closeModal(); renderUsersTable(); showToast('تم الحفظ');
-}
-
-function confirmDeleteUser(username){ openModal(`<h3>تأكيد حذف</h3><p class="muted">هل تريد حذف المستخدم ${escapeHtml(username)}؟</p><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn danger" onclick="deleteUser('${escapeHtml(username)}')">حذف</button></div>`); }
-function deleteUser(username){ let ulist=load(DB_KEYS.USERS)||[]; ulist=ulist.filter(x=>x.username!==username); save(DB_KEYS.USERS,ulist); closeModal(); renderUsersTable(); showToast('تم الحذف'); }
-
-/* ============================
-   Utilities
-   ============================ */
-function readFileAsDataURL(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); }); }
-function humanFileSize(size){ if(!size) return '-'; const i=Math.floor(Math.log(size)/Math.log(1024)); return (size/Math.pow(1024,i)).toFixed(2)*1 + ' ' + ['B','KB','MB','GB'][i]; }
-function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function shorten(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n-1)+'…' : s; }
-
-/* ============================
-   Events: auth/search/view/theme/clock/export/import
-   ============================ */
-document.getElementById('btn-login').addEventListener('click', async ()=>{
-  const u=document.getElementById('in-username').value; const p=document.getElementById('in-password').value;
-  if(!u||!p){ showToast('ادخل بيانات الدخول', false); return; }
-  const ok=await attemptLogin(u,p); if(!ok) showToast('بيانات دخول خاطئة', false); else { document.getElementById('in-password').value=''; renderUI(); }
-});
-document.getElementById('btn-guest').addEventListener('click', async ()=>{ const ok=await attemptLogin('guest','guest'); if(!ok) showToast('فشل الدخول الضيف', false); else renderUI(); });
-document.getElementById('btn-logout').addEventListener('click', ()=>{ clearSession(); showToast('تم تسجيل الخروج'); });
-document.getElementById('search-input').addEventListener('input',(e)=> renderProgramsList(e.target.value));
-document.getElementById('view-mode').addEventListener('change', ()=> renderUI());
-document.getElementById('theme-toggle').addEventListener('click', ()=>{
-  document.body.classList.toggle('dark'); save(DB_KEYS.THEME, document.body.classList.contains('dark') ? 'dark' : 'light'); document.getElementById('theme-toggle').textContent = document.body.classList.contains('dark') ? 'Light' : 'Dark';
-});
-function updateClock(){ document.getElementById('header-clock').textContent = new Date().toLocaleTimeString(); } setInterval(updateClock,1000); updateClock();
-
-document.getElementById('open-manage-programs').addEventListener('click', ()=> { document.getElementById('content-table').style.display='block'; document.getElementById('content-cards').style.display='none'; document.getElementById('view-mode').value='table'; renderProgramsTable(); });
-
-document.getElementById('btn-export').addEventListener('click', ()=>{
-  const data={ users: load(DB_KEYS.USERS), programs: load(DB_KEYS.PROGRAMS) };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='adelx36_backup.json'; a.click(); URL.revokeObjectURL(url); showToast('تم تنزيل النسخة الاحتياطية');
-});
-document.getElementById('import-file').addEventListener('change',(e)=>{
-  const f=e.target.files[0]; if(!f) return; const fr=new FileReader(); fr.onload=()=>{ try{ const obj=JSON.parse(fr.result); if(obj.users && obj.programs){ save(DB_KEYS.USERS,obj.users); save(DB_KEYS.PROGRAMS,obj.programs); showToast('تم استيراد البيانات'); renderUI(); } else showToast('ملف غير صالح', false); }catch(err){ showToast('خطأ في قراءة الملف', false); } }; fr.readAsText(f);
-});
-
-/* ============================
-   Small helpers & init render
-   ============================ */
-function escapeAttr(s){ return s.replace(/"/g,'&quot;'); }
-function renderProgramsListFilter(q=''){ renderProgramsList(q); renderProgramsTable(); }
-
-/* initial render */
-renderUI();
+  function searchItems(query){
+    const container=document.getElementById("content");
+    container.innerHTML='';
+    if(query.trim()===""){ renderItems(); return; }
+    const list=document.createElement("div");
+    list.className="program-list";
+    const items=data[currentCategory].filter(item=>item.title.toLowerCase().includes(query.toLowerCase()));
+    items.forEach((item,i)=>{
+      const card=document.createElement("div");
+      card.className="program-card";
+      card.innerHTML=`
+        <img src="${item.img}" alt="${item.title}">
+        <p>${item.title}</p>
+        <button onclick="window.open('${item.link}','_blank')">فتح</button>
+      `;
+      list.appendChild(card);
+    });
+    container.appendChild(list);
+  }
 </script>
+
 </body>
 </html>
