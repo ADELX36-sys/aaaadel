@@ -1,253 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome Back</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>لوحة إدارة بسيطة - GitHub Pages</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-    }
-
-    /* Login Page */
-    #login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      text-align: center;
-      width: 300px;
-    }
-    .login-box input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      background: #4a90e2;
-      border: none;
-      color: white;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .login-box button:hover {
-      background: #357abd;
-    }
-
-    /* Dashboard Layout */
-    #dashboard {
-      display: none;
-      height: 100vh;
-      display: flex;
-    }
-    .sidebar {
-      width: 220px;
-      background: #2c3e50;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-    .sidebar h2 {
-      margin: 0 0 20px;
-      font-size: 1.5em;
-    }
-    .sidebar button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 12px;
-      text-align: left;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background 0.3s;
-    }
-    .sidebar button:hover {
-      background: #34495e;
-    }
-
-    .main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #ecf0f1;
-      padding: 10px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    }
-    .card img {
-      width: 100%;
-      border-radius: 8px;
-      height: 150px;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-
-    .admin-only { display: none; }
+    :root{ --bg:#ffffff; --fg:#000000; --muted:#666; --card:#f5f5f7 }
+    [data-theme="dark"]{ --bg:#0b0b0b; --fg:#ffffff; --muted:#999; --card:#111 }
+    *{ box-sizing:border-box; font-family: "Segoe UI", Tahoma, Arial, sans-serif }
+    html,body{ height:100%; margin:0; background:var(--bg); color:var(--fg) }
+    .app{ max-width:1100px; margin:28px auto; padding:18px }
+    header{ display:flex; align-items:center; justify-content:space-between }
+    .clock{ font-weight:700; font-size:14px }
+    .theme-toggle{ padding:8px 12px; border-radius:8px; background:var(--card); color:var(--fg); border:1px solid #ccc; cursor:pointer }
+    main{ margin-top:18px; display:grid; grid-template-columns: 320px 1fr; gap:18px }
+    .card{ background:var(--card); padding:14px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.04) }
+    .login .field{ margin-bottom:10px }
+    label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px }
+    input[type=text], input[type=password], textarea{ width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; background:transparent; color:var(--fg) }
+    button{ padding:10px 12px; border-radius:8px; border:0; cursor:pointer; background:#0066ff; color:#fff }
+    .small{ font-size:13px; color:var(--muted) }
+    .section-title{ font-weight:700; margin-bottom:8px }
+    .list{ max-height:360px; overflow:auto; margin-top:8px }
+    .item{ padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.06); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px }
+    .item .meta{ color:var(--muted); font-size:12px }
+    .controls button{ margin-left:6px }
+    .search-area{ display:flex; gap:8px; align-items:center }
+    .search-area input{ flex:1 }
+    .audit{ font-size:13px; max-height:200px; overflow:auto; background:transparent }
+    footer{ margin-top:18px; color:var(--muted); font-size:13px }
+    .notice{ padding:10px; background:rgba(255,255,0,0.08); border-radius:8px; margin-bottom:8px }
+    .badge{ background:#eee; padding:6px 10px; border-radius:999px; font-size:12px }
+    @media(max-width:880px){ main{ grid-template-columns:1fr } }
   </style>
 </head>
 <body>
-
-<!-- Login -->
-<div id="login-container">
-  <div class="login-box">
-    <h2>Welcome</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-  </div>
-</div>
-
-<!-- Dashboard -->
-<div id="dashboard">
-  <div class="sidebar">
-    <h2>Menu</h2>
-    <button onclick="showSection('games')">🎮 ألعاب</button>
-    <button onclick="showSection('programs')">💻 برامج</button>
-    <button class="admin-only" onclick="showSection('users')">⚙️ إدارة المستخدمين</button>
-    <button onclick="logout()">🚪 Logout</button>
-  </div>
-
-  <div class="main">
-    <div class="topbar">
-      <h3 id="welcome-msg"></h3>
-      <div id="clock"></div>
-    </div>
-
-    <div id="games" class="section">
-      <h2>🎮 ألعاب</h2>
-      <div class="card-grid" id="games-container"></div>
-      <div class="admin-only">
-        <input type="text" id="game-title" placeholder="Game Title">
-        <input type="text" id="game-link" placeholder="Game Link">
-        <input type="file" id="game-img">
-        <button onclick="addItem('games')">إضافة لعبة</button>
+  <div class="app" id="app">
+    <header>
+      <div class="clock" id="clock">--:--:--</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="theme-toggle" id="themeBtn">تبديل الثيم</button>
       </div>
-    </div>
+    </header>
 
-    <div id="programs" class="section" style="display:none;">
-      <h2>💻 برامج</h2>
-      <div class="card-grid" id="programs-container"></div>
-      <div class="admin-only">
-        <input type="text" id="program-title" placeholder="Program Title">
-        <input type="text" id="program-link" placeholder="Program Link">
-        <input type="file" id="program-img">
-        <button onclick="addItem('programs')">إضافة برنامج</button>
-      </div>
-    </div>
+    <main>
+      <section class="card" aria-label="العمود الأيسر">
+        <div id="authArea">
+          <div class="login">
+            <div class="section-title">تسجيل دخول</div>
+            <div class="field">
+              <label>اسم المستخدم</label>
+              <input type="text" id="username" placeholder="user" />
+            </div>
+            <div class="field">
+              <label>كلمة المرور</label>
+              <input type="password" id="password" placeholder="password" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <button id="loginBtn">دخول</button>
+              <button id="logoutBtn" style="display:none;background:#666">خروج</button>
+            </div>
+            <div class="small" style="margin-top:10px">مستخدم مُهيأ: <span class="badge">adelx36</span></div>
+          </div>
+        </div>
 
-    <div id="users" class="section" style="display:none;">
-      <h2>⚙️ إدارة المستخدمين</h2>
-      <ul id="users-list"></ul>
-    </div>
+        <div style="margin-top:14px">
+          <div class="section-title">بحث سريع</div>
+          <div class="search-area">
+            <input id="searchBox" placeholder="ابحث بكلمة — سيجلب أقرب نتائج" />
+            <button id="searchBtn">بحث</button>
+          </div>
+          <div class="list" id="searchResults"></div>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="section-title">رسالة الموقع (تظهر لكل مسجل)</div>
+          <textarea id="siteMsg" rows="5" placeholder="اكتب رسالة ترحيب أو تنبيه" ></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="saveMsg">حفظ الرسالة</button>
+            <span class="small">المالك فقط يقدر يغير الرسالة.</span>
+          </div>
+        </div>
+
+      </section>
+
+      <section>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="section-title">لوحة التحكم</div>
+            <div class="small">المستخدم الحالي: <span id="currentUser">غير مسجل</span></div>
+          </div>
+
+          <div id="siteNotice" class="notice" style="display:none"></div>
+
+          <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:240px">
+              <div class="section-title">حسابات المستخدمين</div>
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <input id="newUser" placeholder="اسم المستخدم الجديد" />
+                <input id="newPass" placeholder="كلمة المرور" />
+                <button id="addUserBtn">أضف حساب</button>
+              </div>
+              <div class="list" id="usersList"></div>
+            </div>
+
+            <div style="flex:1;min-width:240px">
+              <div class="section-title">روابط / خانات</div>
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <input id="linkTitle" placeholder="عنوان الخانة (مث: وسائط، تعليمات)" />
+                <input id="linkUrl" placeholder="https://..." />
+                <button id="addLinkBtn">أضف رابط</button>
+              </div>
+              <div class="list" id="linksList"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="section-title">سجل التعديلات (Audit log)</div>
+            <div class="audit card" id="auditLog"></div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="app card" style="margin-top:18px; text-align:center">
+      هذه صفحة تجريبية للتشغيل على GitHub Pages — البيانات محفوظة دائمًا حتى بعد الريفريش (localStorage).
+    </footer>
   </div>
-</div>
 
-<script>
-  const users = JSON.parse(localStorage.getItem("users")) || {
-    "adelx36": "0114542653",
-    "guest": "guest"
-  };
-  let currentUser = null;
-  const data = JSON.parse(localStorage.getItem("data")) || { games: [], programs: [] };
+  <script>
+    const OWNER = 'adelx36';
+    const OWNER_PASS = '0114542653';
 
-  function login() {
-    const u = document.getElementById("username").value;
-    const p = document.getElementById("password").value;
-    if (users[u] && users[u] === p) {
-      currentUser = u;
-      document.getElementById("login-container").style.display = "none";
-      document.getElementById("dashboard").style.display = "flex";
-      document.getElementById("welcome-msg").textContent = "Welcome back, " + u;
-      startClock();
-      renderAll();
-      if (u === "adelx36") document.querySelectorAll(".admin-only").forEach(e=>e.style.display="block");
-    } else alert("Wrong credentials!");
-  }
+    function now(){ return new Date().toLocaleString('ar-EG') }
 
-  function logout() {
-    currentUser = null;
-    document.getElementById("login-container").style.display = "flex";
-    document.getElementById("dashboard").style.display = "none";
-  }
+    const STORAGE_KEYS = { users: 'kaiser_users_v2', links: 'kaiser_links_v2', audit: 'kaiser_audit_v2', msg: 'kaiser_msg_v2', theme: 'kaiser_theme_v2' };
 
-  function startClock() {
-    setInterval(()=>{
-      document.getElementById("clock").textContent = new Date().toLocaleTimeString();
-    },1000);
-  }
+    function load(key, fallback){ try{ const v = localStorage.getItem(key); return v? JSON.parse(v): fallback } catch(e){ return fallback } }
+    function save(key, val){ localStorage.setItem(key, JSON.stringify(val)) }
 
-  function showSection(id) {
-    document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-    document.getElementById(id).style.display="block";
-  }
-
-  function addItem(type) {
-    if (currentUser!=="adelx36") return alert("No permission");
-    const title = document.getElementById(type+"-title").value;
-    const link = document.getElementById(type+"-link").value;
-    const file = document.getElementById(type+"-img").files[0];
-    if (!title || !link || !file) return alert("Fill all fields!");
-    const reader=new FileReader();
-    reader.onload = e=>{
-      data[type].push({title,link,img:e.target.result});
-      localStorage.setItem("data", JSON.stringify(data));
-      renderAll();
+    if(!load(STORAGE_KEYS.users)){
+      const init = { [OWNER]: { pass: OWNER_PASS, role: 'owner' } };
+      save(STORAGE_KEYS.users, init);
+      save(STORAGE_KEYS.links, [ { id: genId(), title: 'صفحة المشروع', url: 'https://zero.kaisar.io/', owner: OWNER } ]);
+      save(STORAGE_KEYS.audit, [ { t: now(), user: 'system', action: 'تهيئة النظام وإنشاء المالك' } ]);
+      save(STORAGE_KEYS.msg, 'مرحبا! سجل دخولك لمشاهدة المحتوى.');
     }
-    reader.readAsDataURL(file);
-  }
 
-  function renderAll() {
-    ["games","programs"].forEach(type=>{
-      const c=document.getElementById(type+"-container");
-      c.innerHTML="";
-      data[type].forEach(item=>{
-        const card=document.createElement("div");
-        card.className="card";
-        card.innerHTML=`<img src="${item.img}" alt=""><h3>${item.title}</h3>`;
-        card.onclick=()=>window.open(item.link,"_blank");
-        c.appendChild(card);
-      });
-    });
-  }
-</script>
-</body>
-</html>
+    const el = id => document.getElementById(id);
+    const loginBtn = el('loginBtn'), logoutBtn = el('logoutBtn'), usernameEl = el('username'), passwordEl = el('password');
+    const currentUserEl = el('currentUser'), usersListEl = el('usersList'), addUserBtn = el('addUserBtn');
+    const newUserEl = el('newUser'), newPassEl = el('newPass');
+    const linksListEl = el('linksList'), addLinkBtn = el('addLinkBtn'), linkTitleEl = el('linkTitle'), linkUrlEl = el('linkUrl');
+    const auditEl = el('auditLog'), siteMsgEl = el('siteMsg'), saveMsgBtn = el('saveMsg');
+    const searchBox = el('searchBox'), searchBtn = el('searchBtn'), searchResults = el('searchResults');
+    const siteNotice = el('siteNotice');
+    const themeBtn = el('themeBtn');
+
+    let currentUser = null;
+
+    function genId(){ return 'id_' + Math.random().toString(36).substr(2,9) }
+
+    function loadUsers(){ return load(STORAGE_KEYS.users, {}) }
+    function loadLinks(){ return load(STORAGE_KEYS.links, []) }
+    function loadAudit(){ return load(STORAGE_KEYS.audit, []) }
+
+    function addAudit(user, action){ const a = loadAudit(); a.unshift({ t: now(), user: user||'unknown', action }); if(a.length>500) a.pop(); save(STORAGE_KEYS.audit,a); renderAudit(); }
+    function auth(user, pass){ const users = loadUsers(); return users[user] && users[user].pass===pass }
+
+    function renderUsers(){ const users = loadUsers(); usersListEl.innerHTML = ''; Object.keys(users).forEach(u => {
+      const item = document.createElement('div'); item.className='item';
+      const left = document.createElement('div'); left.innerHTML = `<div><strong>${u}</strong> <span class="meta">${users[u].role||'user'}</span></div><div class="meta">كلمة المرور: <em>${users[u].pass}</em></div>`;
+      const ctrl =
