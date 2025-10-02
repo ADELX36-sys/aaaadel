@@ -1,775 +1,253 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>لوحة البرامج — ADELX36</title>
-<style>
-  /* ====== Variables & Reset ====== */
-  :root{
-    --bg1: #e6f0ff;
-    --bg2: #f8fbff;
-    --card: #ffffff;
-    --muted: #6b7280;
-    --accent: #1f7bf6;
-    --accent-2: #06b6d4;
-    --danger: #ef4444;
-    --success: #10b981;
-    --glass: rgba(255,255,255,0.6);
-    --radius: 12px;
-    --sidebar-w: 260px;
-  }
-  body.dark{
-    --bg1: #071028;
-    --bg2: #071226;
-    --card: #0f1724;
-    --muted: #9aa4b2;
-    --accent: #3b82f6;
-    --accent-2: #06b6d4;
-    --glass: rgba(255,255,255,0.04);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
-    background: linear-gradient(180deg,var(--bg1),var(--bg2));
-    color: #0f1724;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    line-height:1.45;
-    cursor: default;
-  }
-  a{color:var(--accent); text-decoration:none}
-  /* ====== Header ====== */
-  header{
-    position:sticky; top:0; z-index:60;
-    display:flex;justify-content:space-between;align-items:center;
-    padding:12px 18px; background:transparent;
-    backdrop-filter: blur(6px);
-  }
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{
-    width:46px;height:46px;border-radius:10px;
-    background: linear-gradient(135deg,var(--accent),var(--accent-2));
-    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;
-    box-shadow:0 6px 18px rgba(31,123,246,0.18);
-  }
-  header h1{font-size:1rem;margin:0}
-  .controls{display:flex;gap:12px;align-items:center}
-  .clock{font-weight:600;padding:6px 10px;border-radius:8px;background:var(--glass);font-size:0.95rem}
-  .btn{padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
-  .btn:hover{transform:translateY(-2px)}
-  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--muted)}
-  .btn.warn{background:var(--danger)}
-  .muted{color:var(--muted)}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome Back</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
 
-  /* ====== Main layout ====== */
-  main{max-width:1200px;margin:20px auto;padding:12px;display:flex;gap:18px;align-items:flex-start}
-  @media(max-width:980px){ main{flex-direction:column;padding:10px} .sidebar{width:100%;position:relative;height:auto} .content{margin-left:0} }
+    /* Login Page */
+    #login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 300px;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #4a90e2;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .login-box button:hover {
+      background: #357abd;
+    }
 
-  /* ====== Login centered box ====== */
-  .centered { display:flex; align-items:center; justify-content:center; height:calc(100vh - 84px); width:100%;}
-  .login-card{
-    width:460px; max-width:95vw; border-radius:14px; padding:22px;background:var(--card); box-shadow:0 14px 40px rgba(2,6,23,0.06);
-    transform-origin:center; transition:transform .25s ease, box-shadow .25s;
-  }
-  .login-card:hover{transform:translateY(-6px); box-shadow:0 20px 50px rgba(2,6,23,0.08)}
-  .login-title{font-size:1.25rem;margin-bottom:6px}
-  .login-sub{color:var(--muted); margin-bottom:14px}
-  .field{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);margin-bottom:10px;font-size:1rem}
-  .actions-row{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:8px}
+    /* Dashboard Layout */
+    #dashboard {
+      display: none;
+      height: 100vh;
+      display: flex;
+    }
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      margin: 0 0 20px;
+      font-size: 1.5em;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .sidebar button:hover {
+      background: #34495e;
+    }
 
-  /* ====== Sidebar ====== */
-  .sidebar{
-    width:var(--sidebar-w); min-height:64vh; background:var(--card); border-radius:12px; padding:14px; box-shadow:0 10px 30px rgba(2,6,23,0.04);
-    display:flex;flex-direction:column;gap:10px;
-  }
-  .sidebar h3{margin:0 0 6px 0}
-  .cat-list{display:flex;flex-direction:column;gap:8px;overflow:auto}
-  .cat-item{
-    padding:10px;border-radius:8px;background:transparent;border:none;text-align:right;cursor:pointer;color:inherit;transition:all .12s;display:flex;justify-content:space-between;align-items:center
-  }
-  .cat-item:hover{background:linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02))}
-  .cat-item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 6px 18px rgba(31,123,246,0.12)}
-  .small{font-size:0.9rem;color:var(--muted)}
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
 
-  /* ====== Content area ====== */
-  .content{flex:1}
-  .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(2,6,23,0.04);margin-bottom:14px}
-  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-  .search-input{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);min-width:300px}
-  .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-  .item{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));border-radius:10px;padding:8px;border:1px solid rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:8px;transition:transform .12s
-  }
-  .item:hover{transform:translateY(-6px)}
-  .item img{width:100%;height:120px;object-fit:cover;border-radius:8px}
-  .meta{font-size:0.9rem;color:var(--muted)}
-  .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ecf0f1;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
 
-  /* ====== Modal & Toast ====== */
-  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;z-index:9999}
-  .modal{width:100%;max-width:720px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.4)}
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 16px;border-radius:8px;display:none;z-index:10000}
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      height: 150px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
 
-  /* small utils */
-  .muted2{color:var(--muted);font-size:0.9rem}
-  .btn-small{padding:6px 8px;border-radius:8px;border:none;cursor:pointer}
-  footer{max-width:1200px;margin:20px auto 40px;text-align:center;color:var(--muted);font-size:13px}
-  /* cursor on interactive */
-  button,input,select,textarea{cursor:pointer}
-  input[type=text], input[type=password], textarea{cursor:text}
-</style>
+    .admin-only { display: none; }
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="logo">AX</div>
-    <h1>لوحة البرامج — ADELX36</h1>
+
+<!-- Login -->
+<div id="login-container">
+  <div class="login-box">
+    <h2>Welcome</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
   </div>
-  <div class="controls">
-    <div id="user-area" class="muted"></div>
-    <div class="clock" id="header-clock">--:--:--</div>
-    <button id="theme-toggle" class="btn btn-small">Dark</button>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <button onclick="showSection('games')">🎮 ألعاب</button>
+    <button onclick="showSection('programs')">💻 برامج</button>
+    <button class="admin-only" onclick="showSection('users')">⚙️ إدارة المستخدمين</button>
+    <button onclick="logout()">🚪 Logout</button>
   </div>
-</header>
 
-<main id="root">
-  <!-- LOGIN CENTER -->
-  <div id="login-center" class="centered" aria-live="polite">
-    <div class="login-card card" id="login-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div>
-          <div class="login-title">Welcome</div>
-          <div class="login-sub muted">سجّل دخولك للوصول للوحة التحكم</div>
-        </div>
-        <div class="muted2">ADELX36</div>
+  <div class="main">
+    <div class="topbar">
+      <h3 id="welcome-msg"></h3>
+      <div id="clock"></div>
+    </div>
+
+    <div id="games" class="section">
+      <h2>🎮 ألعاب</h2>
+      <div class="card-grid" id="games-container"></div>
+      <div class="admin-only">
+        <input type="text" id="game-title" placeholder="Game Title">
+        <input type="text" id="game-link" placeholder="Game Link">
+        <input type="file" id="game-img">
+        <button onclick="addItem('games')">إضافة لعبة</button>
       </div>
+    </div>
 
-      <input id="login-username" class="field" type="text" placeholder="اسم المستخدم" autocomplete="username">
-      <input id="login-password" class="field" type="password" placeholder="كلمة المرور" autocomplete="current-password">
-
-      <div class="actions-row">
-        <button id="btn-login" class="btn">دخول</button>
-        <button id="btn-guest" class="btn.ghost">دخول كـ ضيف</button>
+    <div id="programs" class="section" style="display:none;">
+      <h2>💻 برامج</h2>
+      <div class="card-grid" id="programs-container"></div>
+      <div class="admin-only">
+        <input type="text" id="program-title" placeholder="Program Title">
+        <input type="text" id="program-link" placeholder="Program Link">
+        <input type="file" id="program-img">
+        <button onclick="addItem('programs')">إضافة برنامج</button>
       </div>
+    </div>
 
-      <div style="margin-top:12px" class="muted2">ادخل حسابك — كلمات السر لا تظهر في الواجهة</div>
+    <div id="users" class="section" style="display:none;">
+      <h2>⚙️ إدارة المستخدمين</h2>
+      <ul id="users-list"></ul>
     </div>
   </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboard" style="display:none;width:100%">
-    <div style="display:flex;gap:18px;align-items:flex-start">
-      <!-- Sidebar -->
-      <aside class="sidebar" id="sidebar" aria-label="التصنيفات">
-        <h3>التصنيفات</h3>
-        <div class="cat-list" id="cat-list"></div>
-
-        <div style="margin-top:10px">
-          <input id="new-cat-input" class="field" placeholder="اسم تصنيف جديد">
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="btn-add-cat" class="btn">إضافة</button>
-            <button id="btn-edit-cats" class="btn.ghost">تعديل</button>
-          </div>
-        </div>
-
-        <div style="margin-top:12px">
-          <div class="small muted">لوحة الإدارة</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-            <button id="btn-manage-users" class="btn.ghost">إدارة المستخدمين</button>
-            <button id="btn-export" class="btn.ghost">تصدير JSON</button>
-            <label class="btn.ghost" style="cursor:pointer">استيراد JSON
-              <input type="file" id="import-file" accept=".json" style="display:none">
-            </label>
-          </div>
-        </div>
-      </aside>
-
-      <!-- content -->
-      <section class="content">
-        <div class="topbar card">
-          <div>
-            <h2 id="welcome-title">Welcome back</h2>
-            <div id="user-role" class="muted2"></div>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="position:relative">
-              <input id="search-input" class="search-input" placeholder="ابحث (جزئي)..." autocomplete="off">
-              <div id="suggestions" style="position:absolute;right:0;top:42px;z-index:80"></div>
-            </div>
-            <select id="view-mode" class="field" style="padding:8px;border-radius:8px">
-              <option value="grid">شبكة</option>
-              <option value="table">جدول</option>
-            </select>
-            <button id="btn-logout" class="btn.ghost">تسجيل خروج</button>
-          </div>
-        </div>
-
-        <!-- items area -->
-        <div class="card" id="items-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <h3 id="items-title">العناصر</h3>
-            <div style="display:flex;gap:8px;align-items:center">
-              <button id="btn-add-item" class="btn">أضف عنصر</button>
-              <button id="btn-refresh" class="btn.ghost">Refresh</button>
-            </div>
-          </div>
-
-          <div id="items-container"></div>
-        </div>
-
-        <!-- users panel (toggle) -->
-        <div id="users-panel" class="card" style="display:none">
-          <h3>إدارة المستخدمين</h3>
-          <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-            <input id="new-username" class="field" placeholder="اسم المستخدم الجديد">
-            <input id="new-password" class="field" placeholder="كلمة المرور">
-            <select id="new-role" class="field" style="width:160px">
-              <option value="guest">Guest</option>
-              <option value="admin">Admin</option>
-            </select>
-            <button id="btn-create-user" class="btn">إنشاء</button>
-          </div>
-          <table class="table" id="users-table" style="width:100%;border-collapse:collapse">
-            <thead><tr><th>المستخدم</th><th>الدور</th><th>إجراءات</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
-      </section>
-    </div>
-  </div>
-</main>
-
-<!-- modal & toast -->
-<div id="modal" class="modal-backdrop"><div class="modal" id="modal-body"></div></div>
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
-<footer>© 2025 — ADELX36</footer>
+</div>
 
 <script>
-/* ============================
-   Storage keys & helpers
-   ============================ */
-const DB = {
-  USERS: 'ax_users_v3',
-  CATS: 'ax_cats_v3',
-  ITEMS: 'ax_items_v3',
-  THEME: 'ax_theme_v3',
-  SESSION: 'ax_session_v3'
-};
-function save(key,data){ localStorage.setItem(key, JSON.stringify(data)); }
-function load(key){ try{ return JSON.parse(localStorage.getItem(key)) } catch(e){ return null } }
-function toast(msg, ok=true){ const t=document.getElementById('toast'); t.textContent = msg; t.style.background = ok? '#111' : '#b91c1c'; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
-function openModal(html){ const md=document.getElementById('modal'); document.getElementById('modal-body').innerHTML = html; md.style.display='flex'; }
-function closeModal(){ document.getElementById('modal').style.display='none'; }
-document.getElementById('modal').addEventListener('click', (e)=>{ if(e.target.id==='modal') closeModal(); });
+  const users = JSON.parse(localStorage.getItem("users")) || {
+    "adelx36": "0114542653",
+    "guest": "guest"
+  };
+  let currentUser = null;
+  const data = JSON.parse(localStorage.getItem("data")) || { games: [], programs: [] };
 
-/* SHA-256 hash for password storage */
-async function hashPwd(pw){
-  const enc = new TextEncoder().encode(pw);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-/* ============================
-   Initial data & setup
-   ============================ */
-let users = load(DB.USERS);
-let cats = load(DB.CATS);
-let items = load(DB.ITEMS);
-let session = load(DB.SESSION);
-let theme = load(DB.THEME) || 'light';
-
-(async function init(){
-  // default admin if no users
-  if(!users){
-    const adminHash = await hashPwd('0114542653'); // default initial password
-    users = [{ username:'adelx36', role:'admin', pass: adminHash }];
-    save(DB.USERS, users);
+  function login() {
+    const u = document.getElementById("username").value;
+    const p = document.getElementById("password").value;
+    if (users[u] && users[u] === p) {
+      currentUser = u;
+      document.getElementById("login-container").style.display = "none";
+      document.getElementById("dashboard").style.display = "flex";
+      document.getElementById("welcome-msg").textContent = "Welcome back, " + u;
+      startClock();
+      renderAll();
+      if (u === "adelx36") document.querySelectorAll(".admin-only").forEach(e=>e.style.display="block");
+    } else alert("Wrong credentials!");
   }
-  if(!cats){ cats = ['Programs','Games','Tools']; save(DB.CATS, cats); }
-  if(!items){ items = []; save(DB.ITEMS, items); }
-  if(theme === 'dark') document.body.classList.add('dark');
-  bindUI();
-  renderLoginState();
-  // restore session if valid
-  if(session && session.username){
-    const u = (load(DB.USERS)||users).find(x=>x.username===session.username);
-    if(u) setSession(u.username);
-    else localStorage.removeItem(DB.SESSION);
+
+  function logout() {
+    currentUser = null;
+    document.getElementById("login-container").style.display = "flex";
+    document.getElementById("dashboard").style.display = "none";
   }
-})();
 
-/* ============================
-   UI binding
-   ============================ */
-function bindUI(){
-  document.getElementById('btn-login').addEventListener('click', handleLogin);
-  document.getElementById('btn-guest').addEventListener('click', handleGuestLogin);
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-  document.getElementById('btn-logout').addEventListener('click', handleLogout);
-  document.getElementById('btn-add-cat').addEventListener('click', addCategoryFromInput);
-  document.getElementById('btn-edit-cats').addEventListener('click', openEditCategories);
-  document.getElementById('btn-add-item').addEventListener('click', openAddItemModal);
-  document.getElementById('btn-refresh').addEventListener('click', ()=> { loadState(); renderDashboard(); toast('تم التحديث') });
-  document.getElementById('btn-manage-users').addEventListener('click', toggleUsersPanel);
-  document.getElementById('btn-create-user').addEventListener('click', createUserFromUI);
-  document.getElementById('search-input').addEventListener('input', onSearchInput);
-  document.getElementById('view-mode').addEventListener('change', renderItemsArea);
-  document.getElementById('btn-export').addEventListener('click', exportJSON);
-  document.getElementById('import-file').addEventListener('change', importJSONFile);
-  document.getElementById('new-username').addEventListener('keydown', (e)=> { if(e.key==='Enter') createUserFromUI(); });
-}
-
-/* ============================
-   State helpers
-   ============================ */
-function saveAll(){ save(DB.USERS, users); save(DB.CATS, cats); save(DB.ITEMS, items); }
-function loadState(){ users = load(DB.USERS) || users; cats = load(DB.CATS) || cats; items = load(DB.ITEMS) || items; }
-function setSession(username){ session = { username, ts: Date.now(), activeCategory: session && session.activeCategory ? session.activeCategory : cats[0] }; save(DB.SESSION, session); renderLoginState(); renderDashboard(); }
-function clearSession(){ session = null; localStorage.removeItem(DB.SESSION); renderLoginState(); }
-
-/* ============================
-   Authentication
-   ============================ */
-async function handleLogin(){
-  const u = document.getElementById('login-username').value.trim();
-  const p = document.getElementById('login-password').value;
-  if(!u || !p){ toast('ادخل اسم المستخدم وكلمة المرور', false); return; }
-  const hashed = await hashPwd(p);
-  const list = load(DB.USERS) || users;
-  const found = list.find(x=>x.username===u && x.pass === hashed);
-  if(found){ setSession(found.username); document.getElementById('login-username').value=''; document.getElementById('login-password').value=''; toast('تم تسجيل الدخول'); }
-  else toast('بيانات الدخول غير صحيحة', false);
-}
-async function handleGuestLogin(){
-  // prefer existing guest, otherwise admin must create guests
-  const list = load(DB.USERS) || users;
-  const guest = list.find(u=>u.role==='guest');
-  if(guest){ setSession(guest.username); toast('تم الدخول كضيف'); }
-  else toast('لا يوجد حساب ضيف — أنشئ واحدًا من لوحة الإدارة', false);
-}
-function handleLogout(){
-  clearSession(); toast('تم تسجيل الخروج');
-}
-
-/* ============================
-   Render login vs dashboard
-   ============================ */
-function renderLoginState(){
-  loadState();
-  const logged = session && (load(DB.USERS)||users).find(u=>u.username===session.username);
-  if(logged){
-    document.getElementById('login-center').style.display='none';
-    document.getElementById('dashboard').style.display='block';
-    document.getElementById('user-area').textContent = logged.username;
-    document.getElementById('welcome-title').textContent = 'Welcome back';
-    document.getElementById('user-role').textContent = `الدور: ${logged.role}`;
-  } else {
-    document.getElementById('login-center').style.display='flex';
-    document.getElementById('dashboard').style.display='none';
-    document.getElementById('user-area').textContent = '';
+  function startClock() {
+    setInterval(()=>{
+      document.getElementById("clock").textContent = new Date().toLocaleTimeString();
+    },1000);
   }
-}
 
-/* ============================
-   Dashboard render
-   ============================ */
-function renderDashboard(){
-  loadState();
-  renderSidebar();
-  // select active category from session or default
-  const active = session && session.activeCategory ? session.activeCategory : cats[0];
-  selectCategory(active);
-  renderUsersTable();
-}
+  function showSection(id) {
+    document.querySelectorAll(".section").forEach(s=>s.style.display="none");
+    document.getElementById(id).style.display="block";
+  }
 
-/* sidebar */
-function renderSidebar(){
-  const list = document.getElementById('cat-list'); list.innerHTML = '';
-  cats.forEach(c=>{
-    const btn = document.createElement('button'); btn.className = 'cat-item'; btn.textContent = c;
-    btn.dataset.cat = c; btn.onclick = ()=> selectCategory(c);
-    list.appendChild(btn);
-  });
-}
+  function addItem(type) {
+    if (currentUser!=="adelx36") return alert("No permission");
+    const title = document.getElementById(type+"-title").value;
+    const link = document.getElementById(type+"-link").value;
+    const file = document.getElementById(type+"-img").files[0];
+    if (!title || !link || !file) return alert("Fill all fields!");
+    const reader=new FileReader();
+    reader.onload = e=>{
+      data[type].push({title,link,img:e.target.result});
+      localStorage.setItem("data", JSON.stringify(data));
+      renderAll();
+    }
+    reader.readAsDataURL(file);
+  }
 
-/* select category */
-function selectCategory(cat){
-  if(!session) return;
-  session.activeCategory = cat; save(DB.SESSION, session);
-  // highlight
-  document.querySelectorAll('.cat-item').forEach(el=> el.classList.toggle('active', el.dataset.cat === cat));
-  document.getElementById('items-title').textContent = cat;
-  renderItemsArea();
-}
-
-/* ============================
-   Items (CRUD)
-   ============================ */
-function genId(){ return 'it_' + Math.random().toString(36).slice(2,10); }
-function placeholder(){ return 'https://via.placeholder.com/600x360?text=No+Image'; }
-
-/* open add item modal */
-function openAddItemModal(){
-  if(!isAdmin()){ toast('مسموح للأدمن فقط', false); return; }
-  const cat = session && session.activeCategory ? session.activeCategory : cats[0];
-  openModal(`
-    <h3>إضافة عنصر جديد (${escapeHtml(cat)})</h3>
-    <input id="m-title" class="field" placeholder="عنوان العنصر">
-    <input id="m-link" class="field" placeholder="رابط (مثال: https://example.com)">
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <label class="btn.ghost" style="padding:8px"><input id="m-img" type="file" accept="image/*" style="display:none">اختر صورة</label>
-      <label class="btn.ghost" style="padding:8px"><input id="m-file" type="file" style="display:none">اختر ملف (اختياري)</label>
-    </div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-      <button class="btn.ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn" onclick="submitAddItem()">إضافة</button>
-    </div>
-  `);
-}
-
-/* submit add item */
-async function submitAddItem(){
-  const title = document.getElementById('m-title').value.trim();
-  const link = document.getElementById('m-link').value.trim();
-  const imgInput = document.getElementById('m-img');
-  const fileInput = document.getElementById('m-file');
-  if(!title){ toast('العنوان مطلوب', false); return; }
-  const category = session && session.activeCategory ? session.activeCategory : cats[0];
-  let img = null, fileData = null, fileName = null;
-  if(imgInput && imgInput.files && imgInput.files[0]) img = await readFileAsDataURL(imgInput.files[0]);
-  if(fileInput && fileInput.files && fileInput.files[0]){ fileData = await readFileAsDataURL(fileInput.files[0]); fileName = fileInput.files[0].name; }
-  const item = { id: genId(), title, category, imgDataURL: img, fileDataURL: fileData, fileName: fileName, link: link||null, created: Date.now() };
-  items.unshift(item); save(DB.ITEMS, items);
-  closeModal(); renderItemsArea(); toast('تمت الإضافة');
-}
-
-/* edit item */
-function openEditItemModal(id){
-  if(!isAdmin()){ toast('مسموح للأدمن فقط', false); return; }
-  const it = items.find(x=>x.id===id); if(!it) return toast('غير موجود', false);
-  openModal(`
-    <h3>تعديل: ${escapeHtml(it.title)}</h3>
-    <input id="e-title" class="field" value="${escapeHtml(it.title)}">
-    <input id="e-link" class="field" value="${escapeHtml(it.link||'')}">
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <label class="btn.ghost" style="padding:8px"><input id="e-img" type="file" accept="image/*" style="display:none">تغيير صورة</label>
-      <label class="btn.ghost" style="padding:8px"><input id="e-file" type="file" style="display:none">تغيير ملف</label>
-    </div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-      <button class="btn.ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn" onclick="submitEditItem('${it.id}')">حفظ</button>
-    </div>
-  `);
-}
-async function submitEditItem(id){
-  const idx = items.findIndex(x=>x.id===id); if(idx===-1) return toast('غير موجود', false);
-  const title = document.getElementById('e-title').value.trim();
-  const link = document.getElementById('e-link').value.trim();
-  const eimg = document.getElementById('e-img');
-  const efile = document.getElementById('e-file');
-  if(!title){ toast('العنوان مطلوب', false); return; }
-  if(eimg && eimg.files && eimg.files[0]) items[idx].imgDataURL = await readFileAsDataURL(eimg.files[0]);
-  if(efile && efile.files && efile.files[0]) { items[idx].fileDataURL = await readFileAsDataURL(efile.files[0]); items[idx].fileName = efile.files[0].name; }
-  items[idx].title = title; items[idx].link = link || null;
-  save(DB.ITEMS, items); closeModal(); renderItemsArea(); toast('تم الحفظ');
-}
-
-/* delete item */
-function confirmDeleteItem(id){
-  if(!isAdmin()){ toast('مسموح للأدمن فقط', false); return; }
-  openModal(`<h3>تأكيد حذف</h3><p class="muted2">هل تريد حذف هذا العنصر نهائيًا؟</p><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn.ghost" onclick="closeModal()">إلغاء</button><button class="btn.warn" onclick="deleteItem('${id}')">حذف</button></div>`);
-}
-function deleteItem(id){ items = items.filter(x=>x.id!==id); save(DB.ITEMS, items); closeModal(); renderItemsArea(); toast('تم الحذف'); }
-
-/* open item view */
-function openItemView(id){
-  const it = items.find(x=>x.id===id); if(!it) return toast('غير موجود', false);
-  openModal(`<h3>${escapeHtml(it.title)}</h3>
-    <img src="${it.imgDataURL || placeholder()}" style="width:100%;max-height:360px;object-fit:cover;border-radius:8px;margin-top:8px">
-    <p class="muted2">أضيف بتاريخ: ${new Date(it.created).toLocaleString()}</p>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      ${it.link? `<a class="btn" href="${normalizeLink(it.link)}" target="_blank" rel="noopener noreferrer">فتح الرابط</a>` : ''}
-      ${isAdmin() && it.fileDataURL ? `<button class="btn" onclick="downloadDataURL('${it.fileDataURL}','${escapeAttr(it.fileName||it.title)}')">تحميل الملف</button>` : ''}
-      <button class="btn.ghost" onclick="closeModal()">إغلاق</button>
-    </div>`);
-}
-
-/* download helper (only admin) */
-function downloadDataURL(dataURL, filename){
-  if(!isAdmin()){ toast('غير مسموح', false); return; }
-  const a = document.createElement('a'); a.href = dataURL; a.download = filename || 'file'; document.body.appendChild(a); a.click(); a.remove();
-}
-
-/* ============================
-   Render items area (grid/table)
-   ============================ */
-function renderItemsArea(){
-  const container = document.getElementById('items-container'); container.innerHTML = '';
-  const mode = document.getElementById('view-mode').value;
-  const category = session && session.activeCategory ? session.activeCategory : cats[0];
-  const list = items.filter(it => it.category === category);
-  if(list.length===0){ container.innerHTML = `<div class="muted2">لا توجد عناصر في هذا التصنيف</div>`; return; }
-  if(mode === 'grid'){
-    const grid = document.createElement('div'); grid.className = 'items-grid';
-    list.forEach(it => grid.appendChild(renderItemCard(it)));
-    container.appendChild(grid);
-  } else {
-    // table view
-    const table = document.createElement('table'); table.className = 'table'; table.style.width='100%';
-    const thead = document.createElement('thead'); thead.innerHTML = `<tr><th>صورة</th><th>العنوان</th><th>تاريخ</th><th>إجراءات</th></tr>`;
-    const tbody = document.createElement('tbody');
-    list.forEach(it=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><img src="${it.imgDataURL||placeholder()}" style="width:120px;height:70px;object-fit:cover;border-radius:6px"></td>
-                      <td>${escapeHtml(it.title)}</td>
-                      <td>${new Date(it.created).toLocaleString()}</td>
-                      <td></td>`;
-      const td = tr.querySelector('td:last-child');
-      td.appendChild(createActionButton('فتح','btn-small', ()=> openItemView(it.id)));
-      if(isAdmin()){ td.appendChild(createActionButton('تعديل','btn-small', ()=> openEditItemModal(it.id)));
-        td.appendChild(createActionButton('حذف','btn-small', ()=> confirmDeleteItem(it.id)));
-        if(it.fileDataURL) td.appendChild(createActionButton('تحميل','btn-small', ()=> downloadDataURL(it.fileDataURL, it.fileName || it.title)));
-      }
-      tbody.appendChild(tr);
+  function renderAll() {
+    ["games","programs"].forEach(type=>{
+      const c=document.getElementById(type+"-container");
+      c.innerHTML="";
+      data[type].forEach(item=>{
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`<img src="${item.img}" alt=""><h3>${item.title}</h3>`;
+        card.onclick=()=>window.open(item.link,"_blank");
+        c.appendChild(card);
+      });
     });
-    table.appendChild(thead); table.appendChild(tbody); container.appendChild(table);
   }
-}
-function renderItemCard(it){
-  const div = document.createElement('div'); div.className='item';
-  div.innerHTML = `<img src="${it.imgDataURL || placeholder()}" alt="${escapeHtml(it.title)}"><div style="font-weight:600">${escapeHtml(it.title)}</div><div class="meta muted2">${new Date(it.created).toLocaleString()}</div>`;
-  const actions = document.createElement('div'); actions.className='actions';
-  actions.appendChild(createActionButton('فتح','btn-small', ()=> openItemView(it.id)));
-  if(isAdmin()){
-    actions.appendChild(createActionButton('تعديل','btn-small', ()=> openEditItemModal(it.id)));
-    actions.appendChild(createActionButton('حذف','btn-small', ()=> confirmDeleteItem(it.id)));
-    if(it.fileDataURL) actions.appendChild(createActionButton('تحميل','btn-small', ()=> downloadDataURL(it.fileDataURL, it.fileName || it.title)));
-  }
-  div.appendChild(actions); return div;
-}
-
-/* ============================
-   Category management
-   ============================ */
-function addCategoryFromInput(){
-  const name = document.getElementById('new-cat-input').value.trim();
-  if(!name){ toast('ادخل اسم التصنيف', false); return; }
-  if(cats.includes(name)){ toast('التصنيف موجود', false); return; }
-  cats.push(name); save(DB.CATS, cats); document.getElementById('new-cat-input').value=''; renderDashboard(); toast('تم إضافة التصنيف');
-}
-function openEditCategories(){
-  openModal(`<h3>تعديل التصنيفات</h3><div id="cats-edit-area" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn.ghost" onclick="closeModal()">إغلاق</button></div>`);
-  const area = document.getElementById('cats-edit-area');
-  cats.forEach((c,idx)=>{
-    const row = document.createElement('div'); row.style.display='flex'; row.style.gap='8px';
-    const inp = document.createElement('input'); inp.value = c; inp.className='field'; inp.style.flex='1';
-    const del = document.createElement('button'); del.className='btn.warn'; del.textContent='حذف';
-    del.onclick = ()=> { if(confirm('حذف التصنيف سيحذف عناصر هذا التصنيف. موافق؟')){ deleteCategory(idx); closeModal(); renderDashboard(); toast('تم الحذف') } };
-    row.appendChild(inp); row.appendChild(del); area.appendChild(row);
-  });
-}
-function deleteCategory(idx){
-  const cat = cats[idx];
-  cats.splice(idx,1);
-  items = items.filter(it => it.category !== cat);
-  save(DB.CATS, cats); save(DB.ITEMS, items);
-}
-
-/* ============================
-   Users management
-   ============================ */
-function toggleUsersPanel(){ const el = document.getElementById('users-panel'); el.style.display = el.style.display === 'none' ? 'block' : 'none'; renderUsersTable(); }
-async function createUserFromUI(){
-  const u = document.getElementById('new-username').value.trim();
-  const p = document.getElementById('new-password').value;
-  const r = document.getElementById('new-role').value;
-  if(!u || !p){ toast('اسم وكلمة المرور مطلوبان', false); return; }
-  const list = load(DB.USERS) || users;
-  if(list.find(x=>x.username === u)){ toast('المستخدم موجود', false); return; }
-  const hashed = await hashPwd(p);
-  list.push({ username: u, role: r, pass: hashed });
-  save(DB.USERS, list); document.getElementById('new-username').value=''; document.getElementById('new-password').value='';
-  renderUsersTable(); toast('تم إنشاء المستخدم');
-}
-function renderUsersTable(){
-  const tbody = document.querySelector('#users-table tbody'); tbody.innerHTML='';
-  const list = load(DB.USERS) || users;
-  list.forEach(u=>{
-    const tr = document.createElement('tr');
-    const actions = document.createElement('td');
-    const editBtn = createActionButton('تعديل','btn-small', ()=> openEditUserModal(u.username));
-    const passBtn = createActionButton('تغيير كلمة السر','btn-small', ()=> openChangePasswordModal(u.username));
-    actions.appendChild(editBtn); actions.appendChild(passBtn);
-    if(u.username !== 'adelx36') actions.appendChild(createActionButton('حذف','btn-small', ()=> { if(confirm('حذف المستخدم؟')){ deleteUser(u.username); renderUsersTable(); } }));
-    tr.innerHTML = `<td>${escapeHtml(u.username)}</td><td>${u.role}</td>`;
-    tr.appendChild(actions); tbody.appendChild(tr);
-  });
-}
-function openEditUserModal(username){
-  const list = load(DB.USERS) || users; const u = list.find(x=>x.username===username); if(!u) return toast('خطأ', false);
-  openModal(`<h3>تعديل مستخدم: ${escapeHtml(u.username)}</h3>
-    <label class="muted2">الدور</label>
-    <select id="edit-role" class="field"><option value="guest">Guest</option><option value="admin">Admin</option></select>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn.ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="submitEditUser('${escapeAttr(u.username)}')">حفظ</button></div>`);
-  setTimeout(()=> document.getElementById('edit-role').value = u.role, 50);
-}
-async function submitEditUser(username){
-  const role = document.getElementById('edit-role').value;
-  let list = load(DB.USERS) || users; const idx = list.findIndex(x=>x.username===username);
-  if(idx===-1) return toast('غير موجود', false);
-  list[idx].role = role; save(DB.USERS, list); closeModal(); renderUsersTable(); toast('تم الحفظ');
-}
-function openChangePasswordModal(username){
-  openModal(`<h3>تغيير كلمة السر: ${escapeHtml(username)}</h3><input id="ch-pass" class="field" type="password" placeholder="كلمة مرور جديدة"><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn.ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="submitChangePass('${escapeAttr(username)}')">حفظ</button></div>`);
-}
-async function submitChangePass(username){
-  const pass = document.getElementById('ch-pass').value; if(!pass){ toast('ادخل كلمة مرور', false); return; }
-  let list = load(DB.USERS) || users; const idx = list.findIndex(x=>x.username===username);
-  if(idx===-1) return toast('غير موجود', false);
-  list[idx].pass = await hashPwd(pass); save(DB.USERS, list); closeModal(); toast('تم تغيير كلمة السر');
-}
-function deleteUser(username){
-  let list = load(DB.USERS) || users;
-  if(username === 'adelx36'){ toast('لا يمكن حذف حساب الأدمن الافتراضي', false); return; }
-  list = list.filter(x=>x.username !== username); save(DB.USERS, list); renderUsersTable(); toast('تم حذف المستخدم');
-}
-
-/* ============================
-   Search (partial + suggestions)
-   ============================ */
-function onSearchInput(e){
-  const q = e.target.value.trim().toLowerCase();
-  const suggestions = document.getElementById('suggestions'); suggestions.innerHTML='';
-  if(!q){ renderItemsArea(); return; }
-  const category = session && session.activeCategory ? session.activeCategory : cats[0];
-  const candidates = items.filter(it => it.category === category && it.title.toLowerCase().includes(q));
-  // suggestions dropdown
-  const box = document.createElement('div'); box.style.background= getComputedStyle(document.body).getPropertyValue('--card'); box.style.borderRadius='8px'; box.style.boxShadow='0 8px 20px rgba(0,0,0,0.08)'; box.style.minWidth='240px';
-  candidates.slice(0,6).forEach(c=>{
-    const row = document.createElement('div'); row.style.padding='8px'; row.style.cursor='pointer'; row.textContent = c.title;
-    row.onclick = ()=> { openItemView(c.id); suggestions.innerHTML=''; document.getElementById('search-input').value=''; };
-    box.appendChild(row);
-  });
-  if(candidates.length===0){ const r = document.createElement('div'); r.style.padding='8px'; r.textContent = 'لا توجد نتائج'; box.appendChild(r); }
-  suggestions.appendChild(box);
-  // filtered render
-  renderFilteredItems(q, category);
-}
-function renderFilteredItems(q, cat){
-  const container = document.getElementById('items-container'); container.innerHTML='';
-  const list = items.filter(it => it.category === cat && it.title.toLowerCase().includes(q));
-  if(list.length===0){ container.innerHTML = `<div class="muted2">لا توجد عناصر مطابقة</div>`; return; }
-  const grid = document.createElement('div'); grid.className='items-grid';
-  list.forEach(it=> grid.appendChild(renderItemCard(it)));
-  container.appendChild(grid);
-}
-
-/* ============================
-   Export / Import JSON
-   ============================ */
-function exportJSON(){
-  const payload = { users: load(DB.USERS) || users, cats: load(DB.CATS) || cats, items: load(DB.ITEMS) || items };
-  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='adelx36_backup.json'; a.click(); URL.revokeObjectURL(url); toast('تم تنزيل النسخة');
-}
-function importJSONFile(e){
-  const f = e.target.files[0]; if(!f) return;
-  const fr = new FileReader(); fr.onload = ()=> {
-    try{
-      const obj = JSON.parse(fr.result);
-      if(obj.users && obj.cats && obj.items){ save(DB.USERS, obj.users); save(DB.CATS, obj.cats); save(DB.ITEMS, obj.items); loadState(); renderDashboard(); toast('تم الاستيراد'); }
-      else toast('ملف غير صالح', false);
-    }catch(err){ toast('خطأ في قراءة الملف', false); }
-  }; fr.readAsText(f);
-}
-
-/* ============================
-   Utilities / helpers
-   ============================ */
-function createActionButton(text, cls, onClick){
-  const b=document.createElement('button'); b.className = cls + ' btn-small'; b.textContent = text; b.onclick = onClick; b.style.marginLeft='6px'; return b;
-}
-function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
-function isAdmin(){ if(!session) return false; const ulist = load(DB.USERS) || users; const u = ulist.find(x=>x.username===session.username); return u && u.role === 'admin'; }
-function readFileAsDataURL(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); }); }
-function normalizeLink(url){ if(!url) return ''; if(url.startsWith('http://')||url.startsWith('https://')) return url; return 'https://' + url; }
-
-/* ============================
-   Small actions & final wiring
-   ============================ */
-/* ensure UI functions exist globally for modal buttons */
-window.openEditItemModal = openEditItemModal;
-window.openEditUserModal = openEditUserModal;
-window.openChangePasswordModal = openChangePasswordModal;
-
-/* render users table */
-function renderUsersTable(){ const t=document.querySelector('#users-table tbody'); if(!t) return; const list = load(DB.USERS) || users; t.innerHTML=''; list.forEach(u=>{ const tr=document.createElement('tr'); const actions=document.createElement('td'); actions.appendChild(createActionButton('تعديل','btn-small', ()=> openEditUserModal(u.username))); actions.appendChild(createActionButton('كلمة السر','btn-small', ()=> openChangePasswordModal(u.username))); if(u.username !== 'adelx36') actions.appendChild(createActionButton('حذف','btn-small', ()=> { if(confirm('حذف المستخدم؟')){ deleteUser(u.username); renderUsersTable(); } })); tr.innerHTML=`<td>${escapeHtml(u.username)}</td><td>${u.role}</td>`; tr.appendChild(actions); t.appendChild(tr); }); }
-
-/* helper placeholders */
-function placeholder(){ return 'https://via.placeholder.com/800x450?text=No+Image'; }
-
-/* safe link open to avoid relative linking issues */
-function openExtern(url){ window.open(normalizeLink(url), '_blank', 'noopener'); }
-
-/* delete & misc wrappers */
-function deleteUser(name){ let list = load(DB.USERS) || users; list = list.filter(x=>x.username !== name); save(DB.USERS, list); toast('تم الحذف'); }
-function deleteItemById(id){ items = items.filter(x=>x.id !== id); save(DB.ITEMS, items); }
-
-/* ============================
-   Clock & theme & rendering initial
-   ============================ */
-function updateClock(){ document.getElementById('header-clock').textContent = new Date().toLocaleTimeString(); }
-setInterval(updateClock,1000); updateClock();
-
-function toggleTheme(){ document.body.classList.toggle('dark'); const newT = document.body.classList.contains('dark') ? 'dark' : 'light'; save(DB.THEME, newT); document.getElementById('theme-toggle').textContent = newT === 'dark' ? 'Light':'Dark'; }
-
-/* render dashboard & items (final connectors) */
-function renderDashboard(){
-  renderSidebar();
-  renderItemsArea();
-  renderUsersTable();
-}
-function renderSidebar(){
-  const list = document.getElementById('cat-list'); list.innerHTML=''; cats.forEach(c=>{ const b=document.createElement('button'); b.className='cat-item'; b.textContent=c; b.dataset.cat=c; b.onclick=()=> selectCategory(c); list.appendChild(b); }); // activate
-  const active = session && session.activeCategory ? session.activeCategory : cats[0]; document.querySelectorAll('.cat-item').forEach(el=> el.classList.toggle('active', el.dataset.cat === active)); document.getElementById('items-title').textContent = active;
-}
-function selectCategory(cat){ if(!session) return; session.activeCategory = cat; save(DB.SESSION, session); renderSidebar(); renderItemsArea(); }
-
-/* render items area (recompute) defined above - used again to ensure binding */
-function renderItemsArea(){ /* defined earlier, but ensure called */ const container = document.getElementById('items-container'); if(!container) return; renderItemsArea_inner(); }
-function renderItemsArea_inner(){
-  const container = document.getElementById('items-container'); container.innerHTML = '';
-  const mode = document.getElementById('view-mode').value;
-  const category = session && session.activeCategory ? session.activeCategory : cats[0];
-  const list = items.filter(it => it.category === category);
-  if(list.length === 0){ container.innerHTML = `<div class="muted2">لا توجد عناصر في هذا التصنيف</div>`; return; }
-  if(mode === 'grid'){ const grid=document.createElement('div'); grid.className='items-grid'; list.forEach(it=> grid.appendChild(renderItemCard(it))); container.appendChild(grid); }
-  else {
-    const table=document.createElement('table'); table.className='table'; table.style.width='100%'; const thead=document.createElement('thead'); thead.innerHTML=`<tr><th>صورة</th><th>العنوان</th><th>تاريخ</th><th>إجراءات</th></tr>`; const tbody=document.createElement('tbody');
-    list.forEach(it=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><img src="${it.imgDataURL||placeholder()}" style="width:120px;height:70px;object-fit:cover;border-radius:6px"></td><td>${escapeHtml(it.title)}</td><td>${new Date(it.created).toLocaleString()}</td><td></td>`; const td=tr.querySelector('td:last-child'); td.appendChild(createActionButton('فتح','btn-small', ()=> openItemView(it.id))); if(isAdmin()){ td.appendChild(createActionButton('تعديل','btn-small', ()=> openEditItemModal(it.id))); td.appendChild(createActionButton('حذف','btn-small', ()=> confirmDeleteItem(it.id))); if(it.fileDataURL) td.appendChild(createActionButton('تحميل','btn-small', ()=> downloadDataURL(it.fileDataURL, it.fileName || it.title))); } tbody.appendChild(tr); }); table.appendChild(thead); table.appendChild(tbody); container.appendChild(table);
-  }
-}
-function renderItemCard(it){
-  const div=document.createElement('div'); div.className='item'; div.innerHTML=`<img src="${it.imgDataURL||placeholder()}" alt="${escapeHtml(it.title)}"><div style="font-weight:600">${escapeHtml(it.title)}</div><div class="meta muted2">${new Date(it.created).toLocaleString()}</div>`; const actions=document.createElement('div'); actions.className='actions'; actions.appendChild(createActionButton('فتح','btn-small', ()=> openItemView(it.id))); if(isAdmin()){ actions.appendChild(createActionButton('تعديل','btn-small', ()=> openEditItemModal(it.id))); actions.appendChild(createActionButton('حذف','btn-small', ()=> confirmDeleteItem(it.id))); if(it.fileDataURL) actions.appendChild(createActionButton('تحميل','btn-small', ()=> downloadDataURL(it.fileDataURL, it.fileName || it.title))); } div.appendChild(actions); return div;
-}
-
-/* finally, when session set show dashboard */
-function setSession(username){ session = { username, ts: Date.now(), activeCategory: session && session.activeCategory ? session.activeCategory : cats[0] }; save(DB.SESSION, session); renderLoginState(); renderDashboard(); }
-window.setSession = setSession;
-
-/* small helper to ensure functions used exist */
-window.renderItemsArea_inner = renderItemsArea_inner;
-window.renderItemsArea = renderItemsArea_inner;
-
-/* ensure session rendering */
-if(session && session.username) { const u = (load(DB.USERS)||users).find(x=>x.username===session.username); if(u) { document.getElementById('login-center').style.display='none'; document.getElementById('dashboard').style.display='block'; document.getElementById('user-area').textContent = u.username; document.getElementById('welcome-title').textContent = 'Welcome back'; document.getElementById('user-role').textContent = `الدور: ${u.role}`; renderDashboard(); } else { localStorage.removeItem(DB.SESSION); } }
-
-/* small polyfill: ensure links open externally using normalizeLink */
-function safeOpen(url){ window.open(normalizeLink(url), '_blank', 'noopener'); }
 </script>
 </body>
 </html>
