@@ -1,264 +1,880 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADELX36 Dashboard</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>لوحة البرامج — AdelX36</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(120deg, #dfe9f3, #ffffff);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  :root{
+    --bg: linear-gradient(120deg,#f2f6fb,#e6eefc);
+    --card: #ffffff;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --accent-2: #06b6d4;
+    --danger: #ef4444;
+    --success: #10b981;
+    --glass: rgba(255,255,255,0.6);
+    --radius: 12px;
+    --max-width: 1200px;
+    --sidebar-width: 260px;
   }
-  /* شاشة تسجيل الدخول */
-  #login-container {
-    background: #fff;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    text-align: center;
-    width: 350px;
+  body.dark{
+    --bg: linear-gradient(120deg,#071026,#071028);
+    --card:#0f1724;
+    --muted:#9aa4b2;
+    --accent:#3b82f6;
+    --accent-2:#06b6d4;
+    --glass: rgba(255,255,255,0.04);
   }
-  #login-container h2 { margin-bottom: 20px; color: #4a90e2; }
-  input, button {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1em;
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "Noto Sans Arabic", Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: var(--bg);
+    color: #0f1724;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
-  button {
-    background: #4a90e2;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover { background: #357abd; }
+  a{ color:var(--accent) }
 
-  /* لوحة التحكم */
-  #dashboard {
-    display: none;
-    width: 100%;
-    height: 100vh;
-    display: flex;
+  header{
+    position:sticky; top:0; z-index:40;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 20px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));
+    backdrop-filter: blur(6px);
+    box-shadow:0 6px 18px rgba(2,6,23,0.04);
   }
-  #sidebar {
-    width: 220px;
-    background: #4a90e2;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-  }
-  #sidebar h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.3em;
-  }
-  #sidebar button {
-    background: none;
-    border: none;
-    color: white;
-    padding: 15px;
-    text-align: left;
-    font-size: 1em;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  #sidebar button:hover { background: #357abd; }
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent), var(--accent-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+  header h1{margin:0;font-size:1.05rem}
+  .controls{display:flex;gap:10px;align-items:center}
+  .clock{font-weight:600;padding:6px 10px;border-radius:8px;background:var(--glass);font-size:0.95rem}
 
-  #main {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  #main h2 { color: #333; }
-  .program-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  .program-card {
-    width: 200px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    padding: 10px;
-    text-align: center;
-  }
-  .program-card img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  .program-card button {
-    margin-top: 10px;
-    background: #e94b3c;
-  }
-  .program-card button:hover { background: #c0392b; }
+  main{max-width:var(--max-width);margin:20px auto;padding:18px;display:flex;gap:18px;align-items:flex-start}
+  /* center when showing login only */
+  .centered { display:flex; align-items:center; justify-content:center; height:calc(100vh - 120px); }
 
-  #topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+  /* login box */
+  .login-box{
+    width:420px; max-width:94vw; background:var(--card); padding:28px; border-radius:14px; box-shadow:0 12px 40px rgba(2,6,23,0.06);
+    text-align:center;
   }
-  #search {
-    width: 300px;
+  .login-box h2{margin:0 0 10px}
+  .login-box p.muted{color:var(--muted); margin:0 0 16px}
+  input[type="text"], input[type="password"], select{
+    width:100%; padding:12px 14px; margin:8px 0; border-radius:10px; border:1px solid rgba(0,0,0,0.06); font-size:1rem;
+    background:transparent;
+  }
+  .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--muted)}
+  .btn.warn{background:var(--danger)}
+  .muted{color:var(--muted)}
+
+  /* layout dashboard */
+  .sidebar{
+    width:var(--sidebar-width); min-height:70vh; background:var(--card); border-radius:12px; padding:14px; box-shadow:0 10px 30px rgba(2,6,23,0.04);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .sidebar h3{margin:4px 0 8px}
+  .cat-list{display:flex;flex-direction:column;gap:6px}
+  .cat-item{padding:10px;border-radius:8px;background:transparent;border:none;text-align:left;cursor:pointer;color:inherit}
+  .cat-item:hover{background:linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02))}
+  .cat-item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+  .sidebar .small{font-size:0.85rem;color:var(--muted);margin-top:8px}
+
+  .content {
+    flex:1; background:transparent; min-height:70vh;
+  }
+  .card{
+    background:var(--card); padding:14px; border-radius:12px; box-shadow:0 10px 30px rgba(2,6,23,0.04); margin-bottom:16px;
+  }
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+  .search-box{display:flex;gap:8px;align-items:center}
+  .search-input{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);min-width:260px}
+
+  .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .item{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+    border-radius:10px;padding:10px;border:1px solid rgba(0,0,0,0.04);display:flex;flex-direction:column;gap:8px;align-items:stretch;
+  }
+  .item img{width:100%;height:120px;object-fit:cover;border-radius:8px}
+  .item .meta{display:flex;justify-content:space-between;align-items:center}
+  .item .actions{display:flex;gap:8px}
+
+  /* table view */
+  .table{width:100%;border-collapse:collapse}
+  .table th,.table td{padding:8px;border-bottom:1px solid rgba(0,0,0,0.05);text-align:left}
+  .btn-small{padding:6px 8px;border-radius:8px;border:none;cursor:pointer}
+
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;z-index:9999}
+  .modal{width:100%;max-width:720px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.4)}
+
+  /* toast */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 16px;border-radius:8px;display:none;z-index:10000}
+
+  footer{max-width:var(--max-width);margin:20px auto 40px;text-align:center;color:var(--muted);font-size:13px}
+  @media(max-width:900px){
+    main{flex-direction:column;padding:12px}
+    .sidebar{width:100%;display:flex;flex-direction:row;overflow:auto;height:auto;gap:6px}
+    .cat-item{white-space:nowrap}
+    .content{margin-top:12px}
   }
 </style>
 </head>
 <body>
-
-<!-- شاشة تسجيل الدخول -->
-<div id="login-container">
-  <h2>Welcome</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- لوحة التحكم -->
-<div id="dashboard">
-  <div id="sidebar">
-    <h3>Menu</h3>
-    <button onclick="showCategory('programs')">برامج</button>
-    <button onclick="showCategory('games')">ألعاب</button>
-    <button onclick="showCategory('tools')">أدوات</button>
-    <button onclick="logout()">Logout</button>
+<header>
+  <div class="brand">
+    <div class="logo">AX</div>
+    <h1>لوحة البرامج</h1>
   </div>
-  <div id="main">
-    <div id="topbar">
-      <h2 id="greeting">Welcome Back</h2>
-      <input type="text" id="search" placeholder="Search..." onkeyup="searchItems(this.value)">
+  <div class="controls">
+    <div id="user-area" class="muted"></div>
+    <div class="clock" id="header-clock">--:--:--</div>
+    <button id="theme-toggle" class="btn btn-small">Dark</button>
+  </div>
+</header>
+
+<!-- main area -->
+<main id="main-root">
+  <!-- login centered initially -->
+  <div id="login-center" class="centered" style="width:100%;">
+    <div class="login-box card" id="login-box">
+      <h2>Welcome</h2>
+      <p class="muted">سجّل دخولك للوصول للوحة التحكم</p>
+
+      <input id="login-username" type="text" placeholder="اسم المستخدم" />
+      <input id="login-password" type="password" placeholder="كلمة المرور" />
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+        <button id="btn-login" class="btn">Login</button>
+        <button id="btn-guest" class="btn.ghost btn" style="background:transparent;border:1px solid rgba(0,0,0,0.06)">Guest</button>
+      </div>
+      <p class="muted" style="margin-top:12px">Welcome — للوصول الكامل سجّل باسم الأدمن</p>
     </div>
-    <div id="content"></div>
-    <hr>
-    <h3>إضافة عنصر جديد</h3>
-    <input type="text" id="item-title" placeholder="العنوان">
-    <input type="file" id="item-img" accept="image/*">
-    <input type="text" id="item-link" placeholder="الرابط">
-    <select id="item-category">
-      <option value="programs">برامج</option>
-      <option value="games">ألعاب</option>
-      <option value="tools">أدوات</option>
-    </select>
-    <button onclick="addItem()">إضافة</button>
   </div>
-</div>
+
+  <!-- dashboard (hidden initially) -->
+  <div id="dashboard-root" style="display:none;width:100%">
+    <div style="display:flex;gap:18px;align-items:flex-start">
+      <aside class="sidebar" id="sidebar">
+        <h3 id="sidebar-title">التصنيفات</h3>
+        <div class="cat-list" id="cat-list"></div>
+        <div style="margin-top:10px">
+          <input id="new-category-input" placeholder="اسم تصنيف جديد" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)">
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="btn-add-category">إضافة</button>
+            <button class="btn ghost" id="btn-edit-cats" title="تعديل/حذف التصنيفات">تعديل</button>
+          </div>
+        </div>
+        <div class="small muted">لوحة الأدمن: إدارة التصنيفات والعناصر والمستخدمين</div>
+        <hr style="margin-top:10px">
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+          <button id="btn-manage-users" class="btn ghost">إدارة المستخدمين</button>
+          <button id="btn-export-json" class="btn ghost">تصدير JSON</button>
+          <label class="btn ghost" style="cursor:pointer">استيراد JSON
+            <input type="file" id="import-file" accept=".json" style="display:none">
+          </label>
+        </div>
+      </aside>
+
+      <section class="content">
+        <div class="topbar card">
+          <div>
+            <h2 id="welcome-title">Welcome back</h2>
+            <div id="user-role" class="muted" style="font-size:0.9rem"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="search-box">
+              <input id="search-input" class="search-input" placeholder="ابحث عن عنوان... (جزئي)" autocomplete="off">
+              <div id="suggestions" style="position:relative"></div>
+            </div>
+            <select id="view-mode" class="input" style="padding:8px;border-radius:8px">
+              <option value="grid">عرض شبكة</option>
+              <option value="table">عرض جدول</option>
+            </select>
+            <button id="btn-logout" class="btn ghost">Logout</button>
+          </div>
+        </div>
+
+        <div id="main-content">
+          <!-- items area -->
+          <div class="card" id="items-area">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <h3 id="items-title">العناصر</h3>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button id="btn-open-add" class="btn">أضف عنصر</button>
+                <button id="btn-refresh" class="btn ghost" title="إعادة تحميل البيانات">Refresh</button>
+              </div>
+            </div>
+
+            <div id="items-container"></div>
+          </div>
+
+          <!-- users panel modal placeholder -->
+          <div id="users-panel" class="card" style="display:none;margin-top:14px">
+            <h3>إدارة المستخدمين</h3>
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+              <input id="new-username" class="input" placeholder="اسم المستخدم الجديد">
+              <input id="new-password" class="input" placeholder="كلمة المرور">
+              <select id="new-role" class="input" style="width:140px">
+                <option value="guest">Guest</option>
+                <option value="admin">Admin</option>
+              </select>
+              <button id="btn-create-user" class="btn">إنشاء</button>
+            </div>
+            <table class="table" id="users-table"><thead><tr><th>المستخدم</th><th>دور</th><th>إجراءات</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- modals -->
+<div id="modal" class="modal-backdrop"><div class="modal" id="modal-body"></div></div>
+<div id="toast" class="toast"></div>
+
+<footer>© 2025 — AdelX36</footer>
 
 <script>
-  const adminUser = "adelx36";
-  const adminPass = "0114542653";
+/* ============================
+   Storage keys & helpers
+   ============================ */
+const DB = {
+  USERS: 'ax_users_v2',
+  CATS: 'ax_cats_v2',
+  ITEMS: 'ax_items_v2',
+  THEME: 'ax_theme_v2',
+  SESSION: 'ax_session_v2'
+};
 
-  let data = JSON.parse(localStorage.getItem("dashboardData")) || {
-    programs: [],
-    games: [],
-    tools: []
-  };
+function save(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
+function load(key){ try{ return JSON.parse(localStorage.getItem(key)) || null } catch(e){ return null; } }
+function toast(msg, ok=true){ const t=document.getElementById('toast'); t.textContent=msg; t.style.background = ok? '#111' : '#b91c1c'; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
+function openModal(html){ const md=document.getElementById('modal'); document.getElementById('modal-body').innerHTML = html; md.style.display='flex'; }
+function closeModal(){ document.getElementById('modal').style.display='none'; }
 
-  let currentCategory = "programs";
+/* hash password using SHA-256 */
+async function hashPwd(pw){
+  const enc = new TextEncoder().encode(pw);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 
-  function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    if(username === adminUser && password === adminPass){
-      document.getElementById("login-container").style.display="none";
-      document.getElementById("dashboard").style.display="flex";
-      showCategory("programs");
-    } else {
-      alert("Wrong credentials!");
-    }
+/* ============================
+   Initial defaults
+   ============================ */
+let users = load(DB.USERS);
+let cats = load(DB.CATS);
+let items = load(DB.ITEMS);
+let session = load(DB.SESSION);
+let theme = load(DB.THEME) || 'light';
+
+(async function init(){
+  // default admin if no users
+  if(!users){
+    const adminHash = await hashPwd('0114542653');
+    users = [{ username:'adelx36', role:'admin', pass: adminHash }];
+    save(DB.USERS, users);
   }
-
-  function logout() {
-    document.getElementById("dashboard").style.display="none";
-    document.getElementById("login-container").style.display="block";
+  if(!cats){
+    cats = ['Programs','Games','Tools'];
+    save(DB.CATS, cats);
   }
-
-  function showCategory(cat){
-    currentCategory = cat;
-    renderItems();
+  if(!items){
+    // items stored as {id, title, category, imgDataURL (opt), fileDataURL (opt), link (opt), created}
+    items = [];
+    save(DB.ITEMS, items);
   }
+  // apply theme
+  if(theme === 'dark') document.body.classList.add('dark');
+  renderLoginState();
+  bindUI();
+  if(session && session.username){
+    // keep session if valid
+    const user = users.find(u=>u.username===session.username);
+    if(user) setUserSession(user.username);
+    else localStorage.removeItem(DB.SESSION);
+  }
+})();
 
-  function renderItems() {
-    const container=document.getElementById("content");
-    container.innerHTML='';
-    const items=data[currentCategory];
-    const list=document.createElement("div");
-    list.className="program-list";
-    items.forEach((item,i)=>{
-      const card=document.createElement("div");
-      card.className="program-card";
-      card.innerHTML=`
-        <img src="${item.img}" alt="${item.title}">
-        <p>${item.title}</p>
-        <button onclick="removeItem(${i})">حذف</button>
-        <button onclick="window.open('${item.link}','_blank')">فتح</button>
-      `;
-      list.appendChild(card);
+/* ============================
+   Bind UI actions
+   ============================ */
+function bindUI(){
+  document.getElementById('btn-login').addEventListener('click', handleLogin);
+  document.getElementById('btn-guest').addEventListener('click', handleGuestLogin);
+  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+  document.getElementById('btn-logout').addEventListener('click', handleLogout);
+  document.getElementById('btn-add-category').addEventListener('click', addCategoryFromInput);
+  document.getElementById('btn-edit-cats').addEventListener('click', ()=> openEditCategories());
+  document.getElementById('btn-open-add').addEventListener('click', ()=> openAddItemModal());
+  document.getElementById('btn-refresh').addEventListener('click', ()=> { loadState(); renderDashboard(); toast('تم التحديث'); });
+  document.getElementById('btn-manage-users').addEventListener('click', ()=> toggleUsersPanel());
+  document.getElementById('btn-create-user').addEventListener('click', createUserFromUI);
+  document.getElementById('search-input').addEventListener('input', onSearchInput);
+  document.getElementById('view-mode').addEventListener('change', renderItemsArea);
+  document.getElementById('btn-export-json').addEventListener('click', exportJSON);
+  document.getElementById('import-file').addEventListener('change', importJSONFile);
+}
+
+/* ============================
+   State helpers
+   ============================ */
+function saveAll(){
+  save(DB.USERS, users);
+  save(DB.CATS, cats);
+  save(DB.ITEMS, items);
+}
+function loadState(){ users = load(DB.USERS) || users; cats = load(DB.CATS) || cats; items = load(DB.ITEMS) || items; theme = load(DB.THEME) || theme; }
+function setUserSession(username){
+  save(DB.SESSION, { username, ts: Date.now() });
+  session = { username };
+  renderLoginState();
+  renderDashboard();
+}
+function clearSession(){
+  localStorage.removeItem(DB.SESSION);
+  session = null;
+  renderLoginState();
+}
+
+/* ============================
+   Login / Logout
+   ============================ */
+async function handleLogin(){
+  const u = document.getElementById('login-username').value.trim();
+  const p = document.getElementById('login-password').value;
+  if(!u || !p){ toast('ادخل اسم المستخدم وكلمة المرور', false); return; }
+  const hashed = await hashPwd(p);
+  const found = (load(DB.USERS) || users).find(x=>x.username === u && x.pass === hashed);
+  if(found){
+    setUserSession(found.username);
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    toast('تم تسجيل الدخول');
+  } else {
+    toast('بيانات الدخول غير صحيحة', false);
+  }
+}
+function handleGuestLogin(){
+  // open login modal prefilled with guest if exists -> or create guest account on fly
+  const guestUser = (load(DB.USERS)||users).find(u=>u.role==='guest');
+  if(guestUser){
+    setUserSession(guestUser.username);
+    toast('تم الدخول كضيف');
+  } else {
+    // create a default guest
+    (async()=>{
+      const hash = await hashPwd('guest');
+      users.push({ username:'guest', role:'guest', pass:hash });
+      save(DB.USERS, users);
+      setUserSession('guest');
+      toast('تم إنشاء حساب ضيف وتسجيل الدخول');
+    })();
+  }
+}
+function handleLogout(){
+  clearSession();
+  toast('تم تسجيل الخروج');
+}
+
+/* ============================
+   Render login vs dashboard
+   ============================ */
+function renderLoginState(){
+  loadState();
+  const logged = session && users.find(u=>u.username===session.username);
+  if(logged){
+    document.getElementById('login-center').style.display = 'none';
+    document.getElementById('dashboard-root').style.display = 'block';
+    document.getElementById('user-area').textContent = logged.username;
+    document.getElementById('welcome-title').textContent = 'Welcome back';
+    document.getElementById('user-role').textContent = `الدور: ${logged.role}`;
+  } else {
+    document.getElementById('login-center').style.display = 'flex';
+    document.getElementById('dashboard-root').style.display = 'none';
+    document.getElementById('user-area').textContent = '';
+  }
+}
+
+/* ============================
+   Dashboard render
+   ============================ */
+function renderDashboard(){
+  loadState();
+  // sidebar categories
+  const catList = document.getElementById('cat-list');
+  catList.innerHTML = '';
+  cats.forEach((c, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-item';
+    btn.textContent = c;
+    btn.onclick = () => selectCategory(c);
+    btn.dataset.cat = c;
+    catList.appendChild(btn);
+  });
+
+  // ensure active category
+  const active = session && session.activeCategory ? session.activeCategory : cats[0];
+  selectCategory(active);
+  renderUsersTable(); // update users table if visible
+}
+
+/* select category */
+function selectCategory(category){
+  if(!session) return;
+  session.activeCategory = category;
+  save(DB.SESSION, session);
+  // highlight
+  document.querySelectorAll('.cat-item').forEach(el=>el.classList.toggle('active', el.dataset.cat === category));
+  // set items title
+  document.getElementById('items-title').textContent = category;
+  renderItemsArea();
+}
+
+/* render items area (grid/table) */
+function renderItemsArea(){
+  const container = document.getElementById('items-container');
+  container.innerHTML = '';
+  const mode = document.getElementById('view-mode').value;
+  const category = session && session.activeCategory ? session.activeCategory : cats[0];
+  const list = items.filter(it => it.category === category);
+  if(mode === 'grid'){
+    const grid = document.createElement('div'); grid.className = 'items-grid';
+    list.forEach(it => { grid.appendChild(renderItemCard(it)); });
+    container.appendChild(grid);
+  } else {
+    const tbl = document.createElement('table'); tbl.className = 'table';
+    const thead = document.createElement('thead'); thead.innerHTML = `<tr><th>صورة</th><th>العنوان</th><th>وقت الإضافة</th><th>إجراءات</th></tr>`;
+    const tbody = document.createElement('tbody');
+    list.forEach(it => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><img src="${it.imgDataURL || placeholder()}" style="width:120px;height:60px;object-fit:cover;border-radius:6px"></td>
+                      <td>${escapeHtml(it.title)}</td>
+                      <td>${new Date(it.created).toLocaleString()}</td>
+                      <td></td>`;
+      const actionsTd = tr.querySelector('td:last-child');
+      actionsTd.appendChild(createActionButton('فتح','btn', ()=> openItemView(it.id)));
+      if(isAdmin()) actionsTd.appendChild(createActionButton('تعديل','btn ghost', ()=> openEditItemModal(it.id)));
+      if(isAdmin()) actionsTd.appendChild(createActionButton('حذف','btn warn', ()=> confirmDeleteItem(it.id)));
+      if(isAdmin() && it.fileDataURL) actionsTd.appendChild(createActionButton('تحميل','btn', ()=> downloadDataURL(it.fileDataURL, it.title) ));
+      tbody.appendChild(tr);
     });
-    container.appendChild(list);
+    tbl.appendChild(thead); tbl.appendChild(tbody); container.appendChild(tbl);
   }
+}
 
-  function addItem() {
-    const title=document.getElementById("item-title").value;
-    const file=document.getElementById("item-img").files[0];
-    const link=document.getElementById("item-link").value;
-    const cat=document.getElementById("item-category").value;
-    if(title && file && link){
-      const reader=new FileReader();
-      reader.onload=function(e){
-        data[cat].push({title,img:e.target.result,link});
-        saveData();
-        renderItems();
-      }
-      reader.readAsDataURL(file);
-      document.getElementById("item-title").value='';
-      document.getElementById("item-img").value='';
-      document.getElementById("item-link").value='';
-    } else {
-      alert("املأ كل الحقول!");
-    }
+/* create item card DOM */
+function renderItemCard(it){
+  const div = document.createElement('div'); div.className = 'item';
+  div.innerHTML = `
+    <img src="${it.imgDataURL || placeholder()}" alt="${escapeHtml(it.title)}">
+    <div style="font-weight:600">${escapeHtml(it.title)}</div>
+    <div class="meta muted">${new Date(it.created).toLocaleString()}</div>
+  `;
+  const actions = document.createElement('div'); actions.className = 'actions';
+  actions.appendChild(createActionButton('فتح', 'btn', ()=> openItemView(it.id)));
+  if(isAdmin()){
+    actions.appendChild(createActionButton('تعديل','btn ghost', ()=> openEditItemModal(it.id)));
+    actions.appendChild(createActionButton('حذف','btn warn', ()=> confirmDeleteItem(it.id)));
+    if(it.fileDataURL) actions.appendChild(createActionButton('تحميل','btn', ()=> downloadDataURL(it.fileDataURL, it.title)));
   }
+  div.appendChild(actions);
+  return div;
+}
 
-  function removeItem(index) {
-    data[currentCategory].splice(index,1);
-    saveData();
-    renderItems();
-  }
+/* ============================
+   Item CRUD + modals
+   ============================ */
+function placeholder(){ return 'https://via.placeholder.com/400x240?text=Image'; }
+function genId(){ return 'it_' + Math.random().toString(36).slice(2,10); }
 
-  function saveData() {
-    localStorage.setItem("dashboardData",JSON.stringify(data));
-  }
+function openAddItemModal(){
+  const category = session && session.activeCategory ? session.activeCategory : cats[0];
+  openModal(`
+    <h3>إضافة عنصر جديد</h3>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="m-title" class="input" placeholder="العنوان">
+      <input id="m-link" class="input" placeholder="رابط (اختياري)">
+    </div>
+    <div style="margin-top:8px">
+      <label class="muted">صورة (اختياري)</label><input id="m-img" type="file" accept="image/*">
+      <label class="muted">ملف للتنزيل (اختياري - للأدمن فقط)</label><input id="m-file" type="file">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button class="btn ghost" onclick="closeModal()">إلغاء</button>
+      <button class="btn" onclick="submitAddItem('${category}')">إضافة</button>
+    </div>
+  `);
+}
 
-  function searchItems(query){
-    const container=document.getElementById("content");
-    container.innerHTML='';
-    if(query.trim()===""){ renderItems(); return; }
-    const list=document.createElement("div");
-    list.className="program-list";
-    const items=data[currentCategory].filter(item=>item.title.toLowerCase().includes(query.toLowerCase()));
-    items.forEach((item,i)=>{
-      const card=document.createElement("div");
-      card.className="program-card";
-      card.innerHTML=`
-        <img src="${item.img}" alt="${item.title}">
-        <p>${item.title}</p>
-        <button onclick="window.open('${item.link}','_blank')">فتح</button>
-      `;
-      list.appendChild(card);
-    });
-    container.appendChild(list);
+async function submitAddItem(category){
+  const title = document.getElementById('m-title').value.trim();
+  const link = document.getElementById('m-link').value.trim();
+  const imgInput = document.getElementById('m-img');
+  const fileInput = document.getElementById('m-file');
+  if(!title){ toast('العنوان مطلوب', false); return; }
+  let imgData = null, fileData=null, fileName=null;
+  if(imgInput && imgInput.files && imgInput.files[0]) imgData = await readFileAsDataURL(imgInput.files[0]);
+  if(fileInput && fileInput.files && fileInput.files[0]) { fileData = await readFileAsDataURL(fileInput.files[0]); fileName = fileInput.files[0].name; }
+  const it = { id: genId(), title, category, imgDataURL: imgData, fileDataURL: fileData, fileName: fileName, link: link||null, created: Date.now() };
+  items.unshift(it); save(DB.ITEMS, items);
+  closeModal(); renderItemsArea(); toast('تمت الإضافة');
+}
+
+function openEditItemModal(id){
+  const it = items.find(x=>x.id===id); if(!it) return toast('عنصر غير موجود', false);
+  openModal(`
+    <h3>تعديل عنصر</h3>
+    <input id="e-title" class="input" value="${escapeHtml(it.title)}">
+    <input id="e-link" class="input" value="${escapeHtml(it.link || '')}" placeholder="رابط (اختياري)">
+    <div style="margin-top:8px"><label class="muted">تغيير الصورة (اختياري)</label><input id="e-img" type="file" accept="image/*"></div>
+    <div style="margin-top:8px"><label class="muted">تغيير الملف (اختياري)</label><input id="e-file" type="file"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button class="btn ghost" onclick="closeModal()">إلغاء</button>
+      <button class="btn" onclick="submitEditItem('${it.id}')">حفظ</button>
+    </div>
+  `);
+}
+
+async function submitEditItem(id){
+  const idx = items.findIndex(x=>x.id===id); if(idx===-1) return toast('غير موجود', false);
+  const title = document.getElementById('e-title').value.trim();
+  const link = document.getElementById('e-link').value.trim();
+  const imgInput = document.getElementById('e-img');
+  const fileInput = document.getElementById('e-file');
+  if(!title){ toast('العنوان مطلوب', false); return; }
+  if(imgInput && imgInput.files && imgInput.files[0]) items[idx].imgDataURL = await readFileAsDataURL(imgInput.files[0]);
+  if(fileInput && fileInput.files && fileInput.files[0]) { items[idx].fileDataURL = await readFileAsDataURL(fileInput.files[0]); items[idx].fileName = fileInput.files[0].name; }
+  items[idx].title = title; items[idx].link = link || null;
+  save(DB.ITEMS, items);
+  closeModal(); renderItemsArea(); toast('تم الحفظ');
+}
+
+function confirmDeleteItem(id){
+  openModal(`<h3>تأكيد حذف</h3><p class="muted">هل تريد حذف هذا العنصر نهائياً؟</p><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn warn" onclick="deleteItem('${id}')">حذف</button></div>`);
+}
+function deleteItem(id){
+  items = items.filter(x=>x.id!==id); save(DB.ITEMS, items); closeModal(); renderItemsArea(); toast('تم الحذف');
+}
+
+/* view item */
+function openItemView(id){
+  const it = items.find(x=>x.id===id); if(!it) return toast('عنصر غير موجود', false);
+  openModal(`<h3>${escapeHtml(it.title)}</h3>
+    <img src="${it.imgDataURL || placeholder()}" style="width:100%;max-height:360px;object-fit:cover;border-radius:8px">
+    <p class="muted">أضيف بتاريخ: ${new Date(it.created).toLocaleString()}</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+      ${it.link? `<a class="btn" href="${it.link}" target="_blank" rel="noreferrer">فتح الرابط</a>` : ''}
+      ${isAdmin() && it.fileDataURL ? `<button class="btn" onclick="downloadDataURL('${it.fileDataURL}','${escapeAttr(it.fileName || it.title)}')">تحميل الملف</button>` : ''}
+      <button class="btn ghost" onclick="closeModal()">إغلاق</button>
+    </div>`);
+}
+
+/* download helper (only for admin actions) */
+function downloadDataURL(dataURL, filename){
+  if(!isAdmin()){ toast('غير مسموح بالتحميل', false); return; }
+  const a = document.createElement('a'); a.href = dataURL; a.download = filename || 'file';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ============================
+   Category management
+   ============================ */
+function addCategoryFromInput(){
+  const name = document.getElementById('new-category-input').value.trim();
+  if(!name){ toast('ادخل اسم التصنيف', false); return; }
+  if(cats.includes(name)){ toast('التصنيف موجود بالفعل', false); return; }
+  cats.push(name); save(DB.CATS, cats); document.getElementById('new-category-input').value=''; renderDashboard(); toast('تم إضافة التصنيف');
+}
+function openEditCategories(){
+  openModal(`<h3>تعديل التصنيفات</h3>
+    <div id="cats-edit-area" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إغلاق</button></div>`);
+  const area = document.getElementById('cats-edit-area');
+  cats.forEach((c,idx)=>{
+    const row = document.createElement('div'); row.style.display='flex'; row.style.gap='8px';
+    const inp = document.createElement('input'); inp.value = c; inp.className = 'input'; inp.style.flex='1';
+    const del = document.createElement('button'); del.className='btn warn'; del.textContent='حذف';
+    del.onclick = ()=>{ if(confirm('حذف التصنيف سيحذف عناصر هذا التصنيف. موافق؟')){ deleteCategory(idx); closeModal(); renderDashboard(); toast('تم الحذف'); } };
+    row.appendChild(inp); row.appendChild(del); area.appendChild(row);
+  });
+}
+function deleteCategory(idx){
+  const cat = cats[idx];
+  cats.splice(idx,1);
+  // delete items in that category
+  items = items.filter(it => it.category !== cat);
+  save(DB.CATS, cats); save(DB.ITEMS, items);
+}
+
+/* ============================
+   Users management
+   ============================ */
+function toggleUsersPanel(){
+  const el = document.getElementById('users-panel');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  renderUsersTable();
+}
+function renderUsersTable(){
+  const tbody = document.querySelector('#users-table tbody'); tbody.innerHTML='';
+  const ulist = load(DB.USERS) || users;
+  ulist.forEach(u=>{
+    const tr = document.createElement('tr');
+    const actions = document.createElement('td');
+    const editBtn = createActionButton('تعديل','btn ghost', ()=> openEditUserModal(u.username));
+    const delBtn = createActionButton('حذف','btn warn', ()=> { if(u.username==='adelx36'){ toast('لا يمكن حذف الأدمن الافتراضي', false); return; } if(confirm('حذف المستخدم سيؤدي لفقد بياناته؟ موافق؟')){ deleteUser(u.username); }});
+    actions.appendChild(editBtn); if(u.username!=='adelx36') actions.appendChild(delBtn);
+    tr.innerHTML = `<td>${escapeHtml(u.username)}</td><td>${u.role}</td>`;
+    tr.appendChild(actions);
+    tbody.appendChild(tr);
+  });
+}
+async function createUserFromUI(){
+  const u = document.getElementById('new-username').value.trim();
+  const p = document.getElementById('new-password').value;
+  const r = document.getElementById('new-role').value;
+  if(!u || !p){ toast('ادخل اسم وكلمة مرور', false); return; }
+  const list = load(DB.USERS) || users;
+  if(list.find(x=>x.username===u)){ toast('المستخدم موجود', false); return; }
+  const hashed = await hashPwd(p);
+  list.push({ username: u, role: r, pass: hashed });
+  save(DB.USERS, list);
+  document.getElementById('new-username').value=''; document.getElementById('new-password').value='';
+  renderUsersTable(); toast('تم إنشاء المستخدم');
+}
+function openEditUserModal(username){
+  const list = load(DB.USERS) || users;
+  const u = list.find(x=>x.username===username); if(!u) return toast('خطأ');
+  openModal(`<h3>تعديل مستخدم: ${escapeHtml(u.username)}</h3>
+    <label class="muted">الدور</label>
+    <select id="edit-u-role" class="input"><option value="guest">Guest</option><option value="admin">Admin</option></select>
+    <label class="muted">كلمة مرور جديدة (اتركها إن لم تغير)</label>
+    <input id="edit-u-pass" type="password" class="input" placeholder="كلمة مرور جديدة">
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="submitEditUser('${escapeAttr(u.username)}')">حفظ</button></div>`);
+  document.getElementById('edit-u-role').value = u.role;
+}
+async function submitEditUser(username){
+  const role = document.getElementById('edit-u-role').value;
+  const pass = document.getElementById('edit-u-pass').value;
+  const list = load(DB.USERS) || users;
+  const idx = list.findIndex(x=>x.username===username);
+  if(idx===-1) return toast('غير موجود', false);
+  list[idx].role = role;
+  if(pass && pass.trim()!==''){ list[idx].pass = await hashPwd(pass); }
+  save(DB.USERS, list); closeModal(); renderUsersTable(); toast('تم الحفظ');
+}
+function deleteUser(username){
+  let list = load(DB.USERS) || users;
+  list = list.filter(x=>x.username !== username);
+  save(DB.USERS, list); renderUsersTable(); toast('تم الحذف');
+}
+
+/* ============================
+   Search (partial + suggestions)
+   ============================ */
+let lastSuggestionTimeout = null;
+function onSearchInput(e){
+  const q = e.target.value.trim().toLowerCase();
+  const suggestionsDiv = document.getElementById('suggestions');
+  suggestionsDiv.innerHTML = '';
+  if(!q) { renderItemsArea(); return; }
+  // find items in current category and across categories
+  const category = session && session.activeCategory ? session.activeCategory : cats[0];
+  const candidates = items.filter(it => it.category === category && it.title.toLowerCase().includes(q));
+  // show suggestions dropdown
+  const list = document.createElement('div'); list.style.position='absolute'; list.style.background='var(--card)'; list.style.boxShadow='0 8px 20px rgba(0,0,0,0.08)'; list.style.borderRadius='8px'; list.style.marginTop='6px'; list.style.zIndex='50';
+  candidates.slice(0,6).forEach(c=>{
+    const row = document.createElement('div'); row.style.padding='8px'; row.style.cursor='pointer'; row.textContent = c.title;
+    row.onclick = ()=> { openItemView(c.id); suggestionsDiv.innerHTML=''; document.getElementById('search-input').value=''; };
+    list.appendChild(row);
+  });
+  if(candidates.length===0){ const row=document.createElement('div'); row.style.padding='8px'; row.textContent='لا توجد نتائج'; list.appendChild(row); }
+  suggestionsDiv.appendChild(list);
+
+  // also render filtered items in view
+  renderFilteredItems(q, category);
+}
+function renderFilteredItems(q, category){
+  const container = document.getElementById('items-container');
+  container.innerHTML = '';
+  const list = items.filter(it => it.category === category && it.title.toLowerCase().includes(q));
+  if(list.length===0){ container.innerHTML = `<div class="muted">لا توجد عناصر مطابقة</div>`; return; }
+  const grid = document.createElement('div'); grid.className='items-grid';
+  list.forEach(it => grid.appendChild(renderItemCard(it)));
+  container.appendChild(grid);
+}
+
+/* ============================
+   Export / Import JSON
+   ============================ */
+function exportJSON(){
+  const payload = { users: load(DB.USERS) || users, cats: load(DB.CATS) || cats, items: load(DB.ITEMS) || items };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'backup_adelx36.json'; a.click(); URL.revokeObjectURL(url); toast('تم تنزيل النسخة الاحتياطية');
+}
+function importJSONFile(e){
+  const f = e.target.files[0]; if(!f) return;
+  const fr = new FileReader(); fr.onload = ()=> {
+    try{
+      const obj = JSON.parse(fr.result);
+      if(obj.users && obj.cats && obj.items){ save(DB.USERS, obj.users); save(DB.CATS, obj.cats); save(DB.ITEMS, obj.items); loadState(); renderDashboard(); toast('تم استيراد البيانات'); }
+      else toast('ملف غير صالح', false);
+    }catch(err){ toast('خطأ في قراءة الملف', false); }
+  }; fr.readAsText(f);
+}
+
+/* ============================
+   Utilities + small UX helpers
+   ============================ */
+function createActionButton(text, cls, onClick){
+  const b = document.createElement('button'); b.className = cls + ' btn-small'; b.textContent = text; b.style.marginLeft='6px';
+  b.onclick = onClick; return b;
+}
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+function isAdmin(){ if(!session) return false; const u = (load(DB.USERS)||users).find(x=>x.username===session.username); return u && u.role === 'admin'; }
+
+/* read file -> dataURL */
+function readFileAsDataURL(file){ return new Promise((res,rej)=>{ const fr = new FileReader(); fr.onload = ()=> res(fr.result); fr.onerror = rej; fr.readAsDataURL(file); }); }
+
+/* ============================
+   Helpers: small render flows
+   ============================ */
+function renderUsersTable(){
+  // called after loadState
+  const t = document.querySelector('#users-table tbody'); if(!t) return;
+  const list = load(DB.USERS) || users;
+  t.innerHTML = '';
+  list.forEach(u=>{
+    const tr = document.createElement('tr');
+    const actions = document.createElement('td');
+    const edit = createActionButton('تعديل','btn ghost', ()=> openEditUserModal(u.username));
+    const pwd = createActionButton('تغيير كلمة السر','btn ghost', ()=> openChangePasswordModal(u.username));
+    actions.appendChild(edit); actions.appendChild(pwd);
+    if(u.username !== 'adelx36') actions.appendChild(createActionButton('حذف','btn warn', ()=> { if(confirm('حذف المستخدم؟')){ deleteUser(u.username); renderUsersTable(); } }));
+    tr.innerHTML = `<td>${escapeHtml(u.username)}</td><td>${u.role}</td>`;
+    tr.appendChild(actions);
+    t.appendChild(tr);
+  });
+}
+function openChangePasswordModal(username){
+  openModal(`<h3>تغيير كلمة السر: ${escapeHtml(username)}</h3>
+    <input id="ch-pass" type="password" class="input" placeholder="كلمة مرور جديدة">
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="submitChangePass('${escapeAttr(username)}')">حفظ</button></div>`);
+}
+async function submitChangePass(username){
+  const pass = document.getElementById('ch-pass').value;
+  if(!pass){ toast('ادخل كلمة مرور', false); return; }
+  let list = load(DB.USERS) || users;
+  const idx = list.findIndex(x=>x.username===username);
+  if(idx===-1) return toast('غير موجود', false);
+  list[idx].pass = await hashPwd(pass);
+  save(DB.USERS, list); closeModal(); toast('تم تغيير كلمة السر');
+}
+
+/* ============================
+   Small helpers: edit user deletion and others
+   ============================ */
+function renderItems(){ renderDashboard(); renderItemsArea(); renderUsersTable(); }
+function renderDashboard(){ renderDashboard; } // placeholder to avoid lint
+
+/* ============================
+   Utilities: delete via id
+   ============================ */
+function deleteItemById(id){ items = items.filter(x=>x.id !== id); save(DB.ITEMS, items); renderItemsArea(); }
+function deleteUserByName(name){ let list = load(DB.USERS) || users; list = list.filter(x=>x.username !== name); save(DB.USERS, list); renderUsersTable(); }
+
+/* wrapper functions for calls used earlier */
+function deleteUser(username){ deleteUserByName(username); toast('تم الحذف'); }
+function deleteItem(id){ deleteItemById(id); closeModal(); toast('تم الحذف'); }
+
+/* ============================
+   Clock & theme & initial render
+   ============================ */
+function updateClock(){ document.getElementById('header-clock').textContent = new Date().toLocaleTimeString(); }
+setInterval(updateClock,1000); updateClock();
+
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  const newTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+  save(DB.THEME, newTheme);
+  document.getElementById('theme-toggle').textContent = newTheme === 'dark'? 'Light':'Dark';
+}
+
+/* generic helpers used earlier but defined at end to keep code order */
+function openEditUserModal(username){ /* defined above */; const fn = window.openEditUserModal; if(fn) fn(username); }
+function renderUsersTable(){ /* defined above */; } // already defined earlier
+function renderItemsArea(){ /* defined earlier above */; }
+
+/* ensure dashboard and sidebar are rendered after login */
+function renderDashboard(){ renderDashboardInternal(); }
+function renderDashboardInternal(){
+  loadState();
+  renderDashboardSidebar();
+  renderItemsArea();
+  renderUsersTable();
+}
+function renderDashboardSidebar(){
+  const catList = document.getElementById('cat-list'); catList.innerHTML='';
+  cats.forEach(c=>{
+    const b = document.createElement('button'); b.className='cat-item'; b.textContent = c;
+    b.dataset.cat = c; b.onclick = ()=> selectCategory(c);
+    catList.appendChild(b);
+  });
+  // active highlight
+  const active = session && session.activeCategory ? session.activeCategory : cats[0];
+  document.querySelectorAll('.cat-item').forEach(el => el.classList.toggle('active', el.dataset.cat === active));
+  document.getElementById('items-title').textContent = active;
+}
+
+/* select category */
+function selectCategory(cat){
+  if(!session) return;
+  session.activeCategory = cat; save(DB.SESSION, session);
+  renderDashboardSidebar();
+  renderItemsArea();
+}
+
+/* helpers for item rendering duplicates avoided */
+function renderItemCard(it){ // defined earlier as function; use it
+  const div = document.createElement('div'); div.className='item';
+  div.innerHTML = `<img src="${it.imgDataURL || placeholder()}" alt="${escapeHtml(it.title)}"><div style="font-weight:600">${escapeHtml(it.title)}</div><div class="meta muted">${new Date(it.created).toLocaleString()}</div>`;
+  const actions = document.createElement('div'); actions.className = 'actions';
+  actions.appendChild(createActionButton('فتح','btn', ()=> openItemView(it.id)));
+  if(isAdmin()){
+    actions.appendChild(createActionButton('تعديل','btn ghost', ()=> openEditItemModal(it.id)));
+    actions.appendChild(createActionButton('حذف','btn warn', ()=> confirmDeleteItem(it.id)));
+    if(it.fileDataURL) actions.appendChild(createActionButton('تحميل','btn', ()=> downloadDataURL(it.fileDataURL, it.fileName || it.title)));
   }
+  div.appendChild(actions);
+  return div;
+}
+
+/* small compatibility shims to ensure functions exist */
+window.openEditUserModal = openEditUserModal;
+window.renderUsersTable = renderUsersTable;
+
+/* On successful session set, show dashboard */
+function renderDashboard(){
+  const logged = session && (load(DB.USERS)||users).find(u=>u.username===session.username);
+  if(!logged) { renderLoginState(); return; }
+  // ensure UI shows dashboard
+  document.getElementById('login-center').style.display = 'none';
+  document.getElementById('dashboard-root').style.display = 'block';
+  document.getElementById('user-area').textContent = logged.username;
+  document.getElementById('welcome-title').textContent = 'Welcome back';
+  document.getElementById('user-role').textContent = `الدور: ${logged.role}`;
+  renderDashboardSidebar();
+  renderItemsArea();
+  renderUsersTable();
+}
+
+/* make sure UI reflects session change */
+if(session){ renderDashboard(); }
 </script>
-
 </body>
 </html>
